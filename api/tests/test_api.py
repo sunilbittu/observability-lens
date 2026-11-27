@@ -121,3 +121,53 @@ def test_unknown_trace_is_404(http, monkeypatch):
             return result
     monkeypatch.setattr(main, "get_client", lambda: Empty())
     assert http.get(f"/api/traces/{TRACE}", headers=AUTH).status_code == 404
+
+
+# --- browser session -------------------------------------------------------
+
+def test_sign_in_with_wrong_token_sets_no_cookie(http):
+    response = http.post("/api/session", json={"token": "wrong"})
+    assert response.status_code == 401
+    assert "set-cookie" not in response.headers
+
+
+def test_sign_in_sets_hardened_cookie_that_is_not_the_token(http):
+    response = http.post("/api/session", json={"token": "test-token"})
+    assert response.status_code == 204
+    cookie = response.headers["set-cookie"]
+    assert "HttpOnly" in cookie and "SameSite=strict" in cookie and "Path=/" in cookie
+    assert "test-token" not in cookie
+
+
+def test_session_cookie_grants_access_and_sign_out_revokes_it(http, fake):
+    assert http.get("/api/session").status_code == 401
+    http.post("/api/session", json={"token": "test-token"})
+    assert http.get("/api/session").json() == {"signed_in": True}
+    assert http.get("/api/traces").status_code == 200
+    assert http.delete("/api/session").status_code == 204
+    assert http.get("/api/traces").status_code == 401
+
+
+def test_forged_cookie_is_rejected(http, fake):
+    http.cookies.set("tracemelt_session", "0" * 64)
+    assert http.get("/api/traces").status_code == 401
+    assert fake.calls == []
+
+
+def test_cookie_is_marked_secure_when_configured(http, monkeypatch):
+    monkeypatch.setenv("TRACEMELT_COOKIE_SECURE", "1")
+    assert "Secure" in http.post("/api/session", json={"token": "test-token"}).headers["set-cookie"]
+
+
+def test_security_headers_on_api_and_ui(http, fake):
+    for path in ("/api/health", "/"):
+        headers = http.get(path).headers
+        assert "default-src 'self'" in headers["content-security-policy"]
+        assert "frame-ancestors 'none'" in headers["content-security-policy"]
+        assert headers["x-content-type-options"] == "nosniff"
+    assert http.get("/api/health").headers["cache-control"] == "no-store"
+
+
+def test_ui_shell_is_served_without_a_token(http):
+    response = http.get("/")
+    assert response.status_code == 200 and "text/html" in response.headers["content-type"]

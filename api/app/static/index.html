@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>tracemelt</title>
+  <link rel="preload" href="fonts/Mulish-VF.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/Lineal-VF.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="bar" id="bar" hidden>
+    <a class="wordmark" href="#/overview" aria-label="tracemelt, overview">tracemelt</a>
+    <nav class="tabs" id="tabs" aria-label="Views">
+      <span class="tabs-slab" id="tabs-slab" aria-hidden="true"></span>
+      <a href="#/overview" data-view="overview">Overview</a>
+      <a href="#/traces" data-view="traces">Traces</a>
+      <a href="#/logs" data-view="logs">Logs</a>
+      <a href="#/metrics" data-view="metrics">Metrics</a>
+      <a href="#/events" data-view="events">Events</a>
+    </nav>
+    <div class="bar-end">
+      <div class="range" id="range" role="group" aria-label="Time range"></div>
+      <button class="quiet" id="sign-out" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <noscript><p class="notice">tracemelt needs JavaScript to load telemetry.</p></noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 # tracemelt
 
-**Status: prototype.** OTLP ingest into ClickHouse and a read-only query API
-exist. There is no UI, alert engine or SDK yet.
+**Status: prototype.** OTLP ingest into ClickHouse, a read-only query API and
+a web UI exist. There is no alert engine or SDK yet.
 
 tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces. OTLP is the ingest contract.
@@ -10,13 +10,16 @@ platform for metrics, events, logs and traces. OTLP is the ingest contract.
 - Roadmap: [docs/project/roadmap.md](docs/project/roadmap.md)
 - Changelog: [docs/project/changelog.md](docs/project/changelog.md)
 
-## Run the ingest stack
+## Run the stack
 
 ```bash
 scripts/init-env.sh
-docker compose up -d --build
+docker compose --profile demo up -d --build
 scripts/smoke.sh
 ```
+
+Then open http://127.0.0.1:8000/ and sign in with `TRACEMELT_API_TOKEN` from
+`.env`. Leave out `--profile demo` to run without the sample workload.
 
 The last command must end with `smoke: all checks passed`. See the
 [quickstart](docs/getting-started/quickstart.md) for expected output and

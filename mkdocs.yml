@@ -22,6 +22,8 @@ nav:
   - Home: index.md
   - Getting started:
       - Quickstart: getting-started/quickstart.md
+  - Using tracemelt:
+      - Web UI: using-tracemelt/ui.md
   - Reference:
       - Query API: api/query-api.md
       - Configuration: reference/configuration.md

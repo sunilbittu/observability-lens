@@ -8,16 +8,21 @@ of the read-only user, so this process cannot raise them.
 
 from __future__ import annotations
 
+import hashlib
 import hmac
 import logging
+import mimetypes
 import os
 import threading
+from pathlib import Path as FsPath
 from typing import Annotated, Any
 
 import clickhouse_connect
 from clickhouse_connect import common
 from clickhouse_connect.driver.exceptions import ClickHouseError
-from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException, Path, Query
+from fastapi import APIRouter, Cookie, Depends, FastAPI, Header, HTTPException, Path, Query, Request, Response
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
 log = logging.getLogger("tracemelt.api")
 
@@ -46,14 +51,31 @@ def get_client():
     return _client
 
 
-def require_token(authorization: Annotated[str | None, Header()] = None) -> None:
-    expected = os.environ["TRACEMELT_API_TOKEN"]
-    supplied = ""
-    if authorization and authorization.startswith("Bearer "):
-        supplied = authorization[len("Bearer "):]
-    if not hmac.compare_digest(supplied.encode(), expected.encode()):
-        raise HTTPException(status_code=401, detail="missing or invalid token",
-                            headers={"WWW-Authenticate": "Bearer"})
+SESSION_COOKIE = "tracemelt_session"
+SESSION_SECONDS = 12 * 3600
+
+
+def _session_value() -> str:
+    """Cookie value for the browser UI. Derived from the API token, so the token itself
+    never reaches browser storage. Rotating the token ends every session."""
+    key = os.environ["TRACEMELT_API_TOKEN"].encode()
+    return hmac.new(key, b"tracemelt-session-v1", hashlib.sha256).hexdigest()
+
+
+def _same(a: str, b: str) -> bool:
+    return hmac.compare_digest(a.encode(), b.encode())
+
+
+def require_token(authorization: Annotated[str | None, Header()] = None,
+                  tracemelt_session: Annotated[str | None, Cookie()] = None) -> None:
+    """Accepts the API token as a bearer header, or the session cookie set by POST /api/session."""
+    if authorization and authorization.startswith("Bearer ") and \
+            _same(authorization[len("Bearer "):], os.environ["TRACEMELT_API_TOKEN"]):
+        return
+    if tracemelt_session and _same(tracemelt_session, _session_value()):
+        return
+    raise HTTPException(status_code=401, detail="missing or invalid token",
+                        headers={"WWW-Authenticate": "Bearer"})
 
 
 # ClickHouse error codes that mean a guardrail stopped the query.
@@ -108,6 +130,31 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+class SignIn(BaseModel):
+    token: str = Field(min_length=1, max_length=512)
+
+
+@app.post("/api/session", status_code=204)
+def sign_in(body: SignIn, response: Response) -> None:
+    """Exchange the API token for an HttpOnly session cookie. Used by the browser UI."""
+    if not _same(body.token, os.environ["TRACEMELT_API_TOKEN"]):
+        raise HTTPException(status_code=401, detail="invalid token")
+    response.set_cookie(SESSION_COOKIE, _session_value(), max_age=SESSION_SECONDS, path="/",
+                        httponly=True, samesite="strict",
+                        secure=os.environ.get("TRACEMELT_COOKIE_SECURE") == "1")
+
+
+@app.delete("/api/session", status_code=204)
+def sign_out(response: Response) -> None:
+    response.delete_cookie(SESSION_COOKIE, path="/")
+
+
+@api.get("/session")
+def session() -> dict[str, bool]:
+    """Lets the UI ask whether it is signed in."""
+    return {"signed_in": True}
+
+
 @api.get("/services")
 def services(since_minutes: Since = 60) -> list[dict[str, Any]]:
     return run(
@@ -135,7 +182,9 @@ def traces(since_minutes: Since = 60, limit: Limit = 50, service: Service = None
                argMin(ServiceName, Timestamp) AS first_service
         FROM otel_traces
         WHERE Timestamp >= now() - toIntervalMinute({{since:UInt32}})
-          AND ({{service:String}} = '' OR ServiceName = {{service:String}})
+          AND ({{service:String}} = '' OR TraceId IN (
+                SELECT TraceId FROM otel_traces
+                WHERE Timestamp >= now() - toIntervalMinute({{since:UInt32}}) AND ServiceName = {{service:String}}))
         GROUP BY TraceId
         HAVING {{errors_only:UInt8}} = 0 OR error_spans > 0
         ORDER BY started_at DESC LIMIT {{limit:UInt32}}
@@ -237,3 +286,28 @@ def gauge_series(name: Annotated[str, Query(min_length=1, max_length=255)],
 
 
 app.include_router(api)
+
+
+_SECURITY_HEADERS = {
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; object-src 'none'; "
+                               "base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Cross-Origin-Opener-Policy": "same-origin",
+}
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    for name, value in _SECURITY_HEADERS.items():
+        response.headers.setdefault(name, value)
+    if request.url.path.startswith("/api/"):
+        response.headers.setdefault("Cache-Control", "no-store")
+    return response
+
+
+mimetypes.add_type("font/woff2", ".woff2")
+
+# The UI shell is public and holds no data; everything it shows comes from /api behind the guard.
+app.mount("/", StaticFiles(directory=FsPath(__file__).parent / "static", html=True), name="ui")

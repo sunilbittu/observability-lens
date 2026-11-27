@@ -11,7 +11,7 @@
 | 4317 | collector | `TRACEMELT_BIND`, default `127.0.0.1` | OTLP gRPC, bearer token required |
 | 4318 | collector | `TRACEMELT_BIND`, default `127.0.0.1` | OTLP HTTP, bearer token required |
 | 13133 | collector | `127.0.0.1` only | Health check, no authentication |
-| 8000 | api | `127.0.0.1` only | [Query API](../api/query-api.md), bearer token required except `/api/health` |
+| 8000 | api | `127.0.0.1` only | [Web UI](../using-tracemelt/ui.md) and [query API](../api/query-api.md). Data requires the API token or a session. |
 | 8123, 9000 | ClickHouse | not published | Reachable only on the Compose network |
 
 The stack has no TLS. Keep `TRACEMELT_BIND` on loopback unless a TLS
@@ -35,7 +35,8 @@ ignored by git.
 | `TRACEMELT_OTLP_GRPC_PORT` | `4317` | Host port for OTLP gRPC. |
 | `TRACEMELT_OTLP_HTTP_PORT` | `4318` | Host port for OTLP HTTP. |
 | `TRACEMELT_COLLECTOR_HEALTH_PORT` | `13133` | Host port for the collector health check. |
-| `TRACEMELT_API_PORT` | `8000` | Host port for the query API. |
+| `TRACEMELT_API_PORT` | `8000` | Host port for the web UI and query API. |
+| `TRACEMELT_COOKIE_SECURE` | `0` | Set to `1` to mark the UI session cookie `Secure`. Required when the UI is served over HTTPS. Not written by `init-env.sh`. |
 
 The ClickHouse user and password are set only when the data volume is first
 created. Editing them in `.env` afterwards does not change the database.
