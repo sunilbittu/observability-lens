@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bootstrap otelens documentation skeleton and Wave 1 pages."""
+"""Bootstrap tracemelt documentation skeleton and Wave 1 pages."""
 
 from __future__ import annotations
 
@@ -76,17 +76,17 @@ MODE_OUTLINE = {
 
 # path, title, status, mode, purpose
 PAGES = [
-    ("index.md", "otelens documentation", "prototype", "explanation", "Documentation landing page."),
+    ("index.md", "tracemelt documentation", "prototype", "explanation", "Documentation landing page."),
     ("getting-started/quickstart.md", "Quickstart", "prototype", "tutorial", "See telemetry in the UI within five minutes."),
     ("getting-started/first-app.md", "Instrument your first app", "prototype", "tutorial", "Send traces, logs, metrics, and events from a real app."),
     ("getting-started/first-alert.md", "Create your first alert", "prototype", "tutorial", "Create a threshold alert and notify a webhook."),
-    ("getting-started/ui-tour.md", "UI tour", "prototype", "tutorial", "Learn every tab in the otelens UI."),
+    ("getting-started/ui-tour.md", "UI tour", "prototype", "tutorial", "Learn every tab in the tracemelt UI."),
     ("getting-started/installation/docker-compose.md", "Install with Docker Compose", "prototype", "how-to", "Run the single-node prototype stack."),
-    ("getting-started/installation/kubernetes.md", "Install on Kubernetes", "planned", "how-to", "Deploy otelens and collectors on Kubernetes."),
+    ("getting-started/installation/kubernetes.md", "Install on Kubernetes", "planned", "how-to", "Deploy tracemelt and collectors on Kubernetes."),
     ("getting-started/installation/air-gapped.md", "Air-gapped installation", "planned", "how-to", "Install without internet access."),
     ("getting-started/installation/production-checklist.md", "Production checklist", "planned", "reference", "Checklist before production use."),
 
-    ("concepts/melt.md", "The MELT model", "prototype", "explanation", "Metrics, events, logs, and traces in otelens."),
+    ("concepts/melt.md", "The MELT model", "prototype", "explanation", "Metrics, events, logs, and traces in tracemelt."),
     ("concepts/architecture.md", "Architecture", "prototype", "explanation", "Current single-node architecture and boundaries."),
     ("concepts/data-model.md", "Data model", "prototype", "explanation", "Tables, attribute contracts, and schema ownership."),
     ("concepts/events-as-logs.md", "Events as logs", "prototype", "explanation", "Why events are tagged log records."),
@@ -95,7 +95,7 @@ PAGES = [
     ("concepts/sampling.md", "Sampling", "planned", "explanation", "Head, tail, and error-preserving sampling strategy."),
     ("concepts/guarantees.md", "Guarantees", "prototype", "explanation", "Durability, ordering, and loss semantics."),
 
-    ("instrumentation/overview.md", "Instrumentation overview", "prototype", "explanation", "How apps send telemetry to otelens."),
+    ("instrumentation/overview.md", "Instrumentation overview", "prototype", "explanation", "How apps send telemetry to tracemelt."),
     ("instrumentation/nodejs.md", "Node.js instrumentation", "prototype", "how-to", "Instrument Node.js services."),
     ("instrumentation/python.md", "Python instrumentation", "prototype", "how-to", "Instrument Python services."),
     ("instrumentation/java.md", "Java instrumentation", "planned", "how-to", "Instrument Java services."),
@@ -103,8 +103,8 @@ PAGES = [
     ("instrumentation/go.md", "Go instrumentation", "planned", "how-to", "Instrument Go services."),
     ("instrumentation/browser-rum.md", "Browser RUM", "planned", "how-to", "Collect browser real-user monitoring."),
     ("instrumentation/mobile.md", "Mobile instrumentation", "planned", "how-to", "Collect mobile telemetry."),
-    ("instrumentation/sdk-reference/nodejs-api.md", "Node.js SDK API", "prototype", "reference", "otelens Node SDK API reference."),
-    ("instrumentation/sdk-reference/python-api.md", "Python SDK API", "prototype", "reference", "otelens Python SDK API reference."),
+    ("instrumentation/sdk-reference/nodejs-api.md", "Node.js SDK API", "prototype", "reference", "tracemelt Node SDK API reference."),
+    ("instrumentation/sdk-reference/python-api.md", "Python SDK API", "prototype", "reference", "tracemelt Python SDK API reference."),
     ("instrumentation/custom-events.md", "Custom events", "prototype", "how-to", "Emit business events."),
     ("instrumentation/custom-metrics.md", "Custom metrics", "prototype", "how-to", "Emit counters, gauges, and histograms."),
     ("instrumentation/logs-and-correlation.md", "Logs and correlation", "prototype", "how-to", "Send logs and correlate them with traces."),
@@ -114,7 +114,7 @@ PAGES = [
     ("instrumentation/troubleshooting-sdk.md", "SDK troubleshooting", "prototype", "how-to", "Debug missing or broken SDK telemetry."),
 
     ("collection/overview.md", "Collection overview", "prototype", "explanation", "Collector role and deployment shapes."),
-    ("collection/configuration-reference.md", "Collector configuration reference", "prototype", "reference", "Collector config fields used by otelens."),
+    ("collection/configuration-reference.md", "Collector configuration reference", "prototype", "reference", "Collector config fields used by tracemelt."),
     ("collection/pipelines.md", "Pipelines", "prototype", "explanation", "Receivers, processors, exporters, and connectors."),
     ("collection/receivers.md", "Receivers", "prototype", "reference", "OTLP, filelog, hostmetrics, kubeletstats, Prometheus, and more."),
     ("collection/processors.md", "Processors", "prototype", "reference", "Batching, memory limits, redaction, filtering, and enrichment."),
@@ -134,13 +134,13 @@ PAGES = [
     ("infrastructure/cloud.md", "Cloud metrics", "planned", "how-to", "Collect managed cloud service metrics."),
     ("infrastructure/metric-names.md", "Infrastructure metric names", "planned", "reference", "Common infrastructure metric names."),
 
-    ("using-otelens/traces.md", "Traces", "prototype", "how-to", "Inspect trace lists and waterfalls."),
-    ("using-otelens/logs.md", "Logs", "prototype", "how-to", "Search logs and jump to traces."),
-    ("using-otelens/metrics.md", "Metrics", "prototype", "how-to", "Chart metrics."),
-    ("using-otelens/events.md", "Events", "prototype", "how-to", "Inspect business events."),
-    ("using-otelens/dashboards.md", "Dashboards", "prototype", "how-to", "Use and build dashboards."),
-    ("using-otelens/search-and-query.md", "Search and query", "prototype", "reference", "Current search and query capabilities."),
-    ("using-otelens/incident-workflow.md", "Incident workflow", "prototype", "how-to", "Use otelens during an incident."),
+    ("using-tracemelt/traces.md", "Traces", "prototype", "how-to", "Inspect trace lists and waterfalls."),
+    ("using-tracemelt/logs.md", "Logs", "prototype", "how-to", "Search logs and jump to traces."),
+    ("using-tracemelt/metrics.md", "Metrics", "prototype", "how-to", "Chart metrics."),
+    ("using-tracemelt/events.md", "Events", "prototype", "how-to", "Inspect business events."),
+    ("using-tracemelt/dashboards.md", "Dashboards", "prototype", "how-to", "Use and build dashboards."),
+    ("using-tracemelt/search-and-query.md", "Search and query", "prototype", "reference", "Current search and query capabilities."),
+    ("using-tracemelt/incident-workflow.md", "Incident workflow", "prototype", "how-to", "Use tracemelt during an incident."),
 
     ("alerting/overview.md", "Alerting overview", "prototype", "explanation", "How alert evaluation works."),
     ("alerting/rule-reference.md", "Alert rule reference", "prototype", "reference", "Rule fields, signals, comparators, windows, cooldowns."),
@@ -152,7 +152,7 @@ PAGES = [
     ("api/rest-reference.md", "REST API reference", "prototype", "reference", "HTTP API endpoints."),
     ("api/authentication.md", "API authentication", "planned", "reference", "Authentication and authorization model."),
     ("api/limits-and-quotas.md", "API limits and quotas", "planned", "reference", "Rate limits, query limits, and quotas."),
-    ("api/examples.md", "API examples", "prototype", "how-to", "Query otelens programmatically."),
+    ("api/examples.md", "API examples", "prototype", "how-to", "Query tracemelt programmatically."),
 
     ("storage/clickhouse-schema.md", "ClickHouse schema", "prototype", "reference", "Telemetry and alert tables."),
     ("storage/retention-and-ttl.md", "Retention and TTL", "planned", "how-to", "Configure retention and TTL."),
@@ -164,8 +164,8 @@ PAGES = [
     ("operations/security-model.md", "Security model", "planned", "explanation", "Trust boundaries, threats, and controls."),
     ("operations/auth-and-rbac.md", "Auth and RBAC", "planned", "explanation", "OIDC, roles, service accounts, and audit."),
     ("operations/multi-tenancy.md", "Multi-tenancy", "planned", "explanation", "Tenant isolation and quotas."),
-    ("operations/upgrades-and-migrations.md", "Upgrades and migrations", "planned", "how-to", "Upgrade otelens, collector, and schema safely."),
-    ("operations/monitoring-otelens.md", "Monitoring otelens", "planned", "how-to", "Observe the observability stack."),
+    ("operations/upgrades-and-migrations.md", "Upgrades and migrations", "planned", "how-to", "Upgrade tracemelt, collector, and schema safely."),
+    ("operations/monitoring-tracemelt.md", "Monitoring tracemelt", "planned", "how-to", "Observe the observability stack."),
     ("operations/ha-and-scaling.md", "HA and scaling", "planned", "explanation", "High availability architecture."),
     ("operations/performance-tuning.md", "Performance tuning", "planned", "how-to", "Tune collector, ClickHouse, and queries."),
     ("operations/runbooks/clickhouse-down.md", "Runbook: ClickHouse down", "planned", "how-to", "Respond to ClickHouse outage."),
@@ -185,9 +185,9 @@ PAGES = [
     ("migrating/from-datadog.md", "Migrating from Datadog", "planned", "how-to", "Move from Datadog."),
     ("migrating/from-elk.md", "Migrating from ELK", "planned", "how-to", "Move from Elasticsearch/Logstash/Kibana."),
 
-    ("reference/env-vars.md", "Environment variables", "prototype", "reference", "Environment variables used by otelens."),
-    ("reference/cli.md", "CLI reference", "planned", "reference", "otelens CLI commands."),
-    ("reference/ports.md", "Ports", "prototype", "reference", "Network ports used by otelens."),
+    ("reference/env-vars.md", "Environment variables", "prototype", "reference", "Environment variables used by tracemelt."),
+    ("reference/cli.md", "CLI reference", "planned", "reference", "tracemelt CLI commands."),
+    ("reference/ports.md", "Ports", "prototype", "reference", "Network ports used by tracemelt."),
     ("reference/glossary.md", "Glossary", "stable", "reference", "Terms and acronyms."),
     ("reference/error-codes.md", "Error codes", "planned", "reference", "Structured error codes."),
     ("reference/version-support.md", "Version support", "prototype", "reference", "Versioning and support policy."),
@@ -212,7 +212,7 @@ PAGES = [
 WAVE1 = {}
 
 WAVE1["README.md"] = dedent("""\
-# otelens
+# tracemelt
 
 OpenTelemetry-native observability: **metrics, events, logs, and traces** in one place.
 
@@ -221,18 +221,18 @@ OpenTelemetry-native observability: **metrics, events, logs, and traces** in one
 
 ## What it is
 
-otelens is a self-hosted observability platform built on standard components:
+tracemelt is a self-hosted observability platform built on standard components:
 
 - **OpenTelemetry Collector** for ingestion over OTLP gRPC/HTTP
 - **ClickHouse** for storage
 - **Query API + web UI** for traces, logs, metrics, events, and dashboards
 - **Alert engine** with webhook/Slack notifications
 
-No proprietary agent or protocol. If it speaks OTLP, it can send data to otelens.
+No proprietary agent or protocol. If it speaks OTLP, it can send data to tracemelt.
 
 ## Quickstart
 
 ```bash
-git clone https://github.com/YOUR_ORG/otelens
-cd otelens
+git clone https://github.com/YOUR_ORG/tracemelt
+cd tracemelt
 docker compose --profile demo up -d --build
