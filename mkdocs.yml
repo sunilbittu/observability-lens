@@ -1,4 +1,4 @@
-site_name: otelens
+site_name: observability-lens
 site_description: OpenTelemetry-native observability — metrics, events, logs, traces
 site_url: https://sunilbittu.github.io/observability-lens/
 repo_url: https://github.com/sunilbittu/observability-lens
