@@ -14,7 +14,7 @@
         <link rel="prev" href="../../getting-started/quickstart/">
       
       
-        <link rel="next" href="../../api/query-api/">
+        <link rel="next" href="../../alerting/rules/">
       
       
         
@@ -561,7 +561,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Alerting
   
 
     
@@ -574,6 +574,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Alerting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alerting/rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules and limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -661,10 +743,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -682,8 +764,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -764,6 +846,34 @@
     
   
     ADR 0001: schema-init job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/adr/0002-alert-rules-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0002: alert rules in a file
   
 
     
@@ -941,6 +1051,10 @@ shows "That token was not accepted."</p>
 <td>Events</td>
 <td>Log records tagged as events, with their attributes.</td>
 </tr>
+<tr>
+<td>Alerts</td>
+<td>What the alert engine recorded: each firing and the outcome of its webhook. Read-only.</td>
+</tr>
 </tbody>
 </table>
 <p>The time range (15m, 1h, 6h, 24h) applies to every view. List views refresh
@@ -962,7 +1076,8 @@ minutes out of every 12, so failed <code>POST /checkout</code> traces appear reg
   and restarting the API ends every session.</li>
 <li>Over plain HTTP the cookie is not marked <code>Secure</code>. Set
   <code>TRACEMELT_COOKIE_SECURE=1</code> when serving the UI over HTTPS.</li>
-<li>No Alerts, Dashboards or Infrastructure views. Sum metrics and histograms
+<li>Alerts are read-only: rules are edited in a file, see <a href="../../alerting/rules/">Alert rules</a>.</li>
+<li>No Dashboards or Infrastructure views. Sum metrics and histograms
   are listed but cannot be charted.</li>
 <li>Lists show the newest 100 traces or 200 records, with no paging.</li>
 <li>Times are shown in the browser's time zone.</li>

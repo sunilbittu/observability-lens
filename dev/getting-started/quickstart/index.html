@@ -450,6 +450,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#6-see-an-alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. See an alert
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#if-something-fails" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -605,7 +616,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Alerting
   
 
     
@@ -618,6 +629,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Alerting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alerting/rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules and limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -705,10 +798,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -726,8 +819,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -808,6 +901,34 @@
     
   
     ADR 0001: schema-init job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/adr/0002-alert-rules-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0002: alert rules in a file
   
 
     
@@ -921,6 +1042,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#6-see-an-alert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. See an alert
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#if-something-fails" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -978,8 +1110,8 @@
 <p class="admonition-title">Status: prototype, ingest only</p>
 <p>Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
 contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
-OTLP ingest into ClickHouse, the query API and the web UI. There is no
-alerting or SDK yet. Applies to: <code>dev</code>.</p>
+OTLP ingest into ClickHouse, the query API, the web UI and alerting.
+There is no SDK yet. Applies to: <code>dev</code>.</p>
 </div>
 <p>This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.</p>
@@ -999,13 +1131,16 @@ overwrite an existing <code>.env</code>.</p>
 docker<span class="w"> </span>compose<span class="w"> </span>ps<span class="w"> </span>--format<span class="w"> </span><span class="s1">'{{.Service}}\t{{.State}}'</span>
 </code></pre></div>
 <p>Expected output, after the images have been pulled:</p>
-<div class="highlight"><pre><span></span><code>api running
+<div class="highlight"><pre><span></span><code>alerts  running
+api running
 clickhouse  running
 collector   running
 demo    running
+webhook-sink    running
 </code></pre></div>
-<p>The <code>demo</code> profile adds a sample workload: three services that send traces,
-logs, events and gauges. Leave the flag out to run without it.</p>
+<p>The <code>demo</code> profile adds a sample workload (three services that send traces,
+logs, events and gauges) and a receiver for alert webhooks. Leave the flag
+out to run without them.</p>
 <h2 id="3-run-the-smoke-test">3. Run the smoke test</h2>
 <div class="highlight"><pre><span></span><code>scripts/smoke.sh
 </code></pre></div>
@@ -1017,10 +1152,13 @@ PASS  slow query killed by time limit (Code: 159)
 PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 </code></pre></div>
-<p>There are 39 <code>PASS</code> lines. Any <code>FAIL</code> line names the check and what it got.</p>
+<p>There are 49 <code>PASS</code> lines. The alerting checks wait for the next evaluation
+pass, so the test takes up to a minute. Any <code>FAIL</code> line names the check and what it got.</p>
 <p>The test sends one span, two log records (one of them an event) and one gauge
 over OTLP HTTP, reads them back from ClickHouse and through the query API,
-and checks that the API's database user is read-only and limited.</p>
+checks that the API's database user is read-only and limited, and checks that
+an alert rule fires, its webhook is delivered and a webhook to the cloud
+metadata address is blocked.</p>
 <h2 id="4-send-your-own-telemetry">4. Send your own telemetry</h2>
 <p>Point any OpenTelemetry SDK at the collector:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://127.0.0.1:4318
@@ -1037,6 +1175,16 @@ curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span>
 <p>Expected output, with your own service names:</p>
 <div class="highlight"><pre><span></span><code>[{"service":"smoke-1795785046-21234","spans":1,"error_spans":0}]
 </code></pre></div>
+<h2 id="6-see-an-alert">6. See an alert</h2>
+<p>The demo payments service fails for 3 minutes out of every 12. When it does,
+the shipped rules fire and the receiver prints what it was sent:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>webhook-sink
+</code></pre></div>
+<p>Expected output within 12 minutes of starting the demo:</p>
+<div class="highlight"><pre><span></span><code>webhook-sink-1  | alert 1: payments-failed-spans: failed spans for payments is 40, which is &gt; 5 over 60s
+</code></pre></div>
+<p>The same firings are listed under <strong>Alerts</strong> in the UI. See
+<a href="../../alerting/rules/">Alert rules and limitations</a> to write your own.</p>
 <h2 id="if-something-fails">If something fails</h2>
 <table>
 <thead>
@@ -1055,6 +1203,10 @@ curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span>
 <td>Another process holds an OTLP port. Change the <code>TRACEMELT_*_PORT</code> values in <code>.env</code>.</td>
 </tr>
 <tr>
+<td><code>alerts</code> keeps restarting</td>
+<td>The rules file is invalid. <code>docker compose logs alerts</code> names the rule and the reason.</td>
+</tr>
+<tr>
 <td>Smoke test fails at <code>collector health</code></td>
 <td>The collector is still starting or is restarting. Check <code>docker compose logs collector</code>.</td>
 </tr>
@@ -1071,6 +1223,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"
 <h2 id="related">Related</h2>
 <ul>
 <li><a href="../../using-tracemelt/ui/">Use the web UI</a></li>
+<li><a href="../../alerting/rules/">Alert rules and limitations</a></li>
 <li><a href="../../api/query-api/">Query API reference</a>: endpoints and guardrails.</li>
 <li><a href="../../reference/configuration/">Configuration reference</a>: ports, environment variables, limits.</li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>

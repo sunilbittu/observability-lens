@@ -457,7 +457,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Alerting
   
 
     
@@ -470,6 +470,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Alerting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alerting/rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules and limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -559,10 +641,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -580,8 +662,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -788,6 +870,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0002-alert-rules-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0002: alert rules in a file
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -954,25 +1064,31 @@ checks have been run and the results recorded.</p>
 <td>done</td>
 </tr>
 <tr>
-<td>Remaining Wave 1 pages (MELT model, architecture, data model, alerting limitations, no-data troubleshooting)</td>
+<td>Alerting limitations page</td>
+<td>done</td>
+</tr>
+<tr>
+<td>Remaining Wave 1 pages (MELT model, architecture, data model, no-data troubleshooting)</td>
 <td>not done: they describe components that do not exist yet</td>
 </tr>
 </tbody>
 </table>
 <h2 id="phase-0-verify-the-quickstart">Phase 0: verify the quickstart</h2>
-<p>State: in progress. Ingest is verified: the collector accepts authenticated
+<p>State: done on 2026-11-27, with alerting limited as described in
+<a href="../../alerting/rules/#limitations">alert limitations</a>. Ingest is verified: the collector accepts authenticated
 OTLP and writes traces, logs, events and metrics to ClickHouse, the query API
 reads them back, and the web UI shows them, including the trace waterfall and
-the jump from a log record to its trace. A demo workload exists. The alert
-engine does not exist yet, so alert creation and webhook delivery are
-unverified.</p>
+the jump from a log record to its trace. A demo workload exists. An alert
+rule fires and its webhook is delivered. Alert rules are created in a file,
+not in the UI.</p>
 <p>Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.</p>
 <h2 id="phase-1-harden-single-node">Phase 1: harden single-node</h2>
 <p>State: started. Done so far: secrets from the environment, token
 authenticated OTLP ingest, a persistent collector queue (tested with a 300
 second outage and a collector restart), ClickHouse with no published ports,
-query guardrails on a read-only ClickHouse user, a token guard on the API.</p>
+query guardrails on a read-only ClickHouse user, a token guard on the API,
+a webhook allowlist with SSRF protection.</p>
 <p>Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
 webhook allowlisting with SSRF protection, self-metrics, disk and retention

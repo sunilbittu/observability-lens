@@ -457,7 +457,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Alerting
   
 
     
@@ -470,6 +470,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Alerting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alerting/rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules and limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -559,10 +641,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -580,8 +662,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -772,6 +854,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0002-alert-rules-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0002: alert rules in a file
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -899,6 +1009,15 @@ to this repository. Applies to: <code>dev</code>.</p>
 <li>Browser sign-in: <code>POST /api/session</code> exchanges the API token for an
   <code>HttpOnly</code> session cookie. Strict content security policy on every response.</li>
 <li>Demo workload behind <code>docker compose --profile demo</code>.</li>
+<li>Alert engine: <code>log_count</code>, <code>error_spans</code> and <code>metric_avg</code> threshold rules
+  from <code>deploy/alerts/rules.toml</code>, with cooldowns that survive a restart.</li>
+<li>Alert webhooks with egress controls: host allowlist, public addresses only
+  unless a host is explicitly listed as private, loopback and link-local
+  always refused, no redirects, connection pinned to the checked address.</li>
+<li><code>alert_events</code> table, <code>GET /api/alerts</code> and an Alerts view in the UI.</li>
+<li>ClickHouse user <code>tracemelt_alert</code>: reads telemetry, writes only
+  <code>alert_events</code>.</li>
+<li>Demo webhook receiver in the <code>demo</code> profile.</li>
 <li>ClickHouse user <code>tracemelt_reader</code>: select-only, with time, memory and row
   limits it cannot raise.</li>
 <li><code>scripts/init-env.sh</code> to generate secrets and <code>scripts/smoke.sh</code> to verify

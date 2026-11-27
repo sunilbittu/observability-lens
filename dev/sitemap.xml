@@ -5,6 +5,10 @@
          <lastmod>2026-11-27</lastmod>
     </url>
     <url>
+         <loc>https://sunilbittu.github.io/observability-lens/dev/alerting/rules/</loc>
+         <lastmod>2026-11-27</lastmod>
+    </url>
+    <url>
          <loc>https://sunilbittu.github.io/observability-lens/dev/api/query-api/</loc>
          <lastmod>2026-11-27</lastmod>
     </url>
@@ -22,6 +26,10 @@
     </url>
     <url>
          <loc>https://sunilbittu.github.io/observability-lens/dev/project/adr/0001-schema-init-job/</loc>
+         <lastmod>2026-11-27</lastmod>
+    </url>
+    <url>
+         <loc>https://sunilbittu.github.io/observability-lens/dev/project/adr/0002-alert-rules-file/</loc>
          <lastmod>2026-11-27</lastmod>
     </url>
     <url>

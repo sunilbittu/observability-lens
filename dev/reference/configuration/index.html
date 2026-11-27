@@ -436,6 +436,88 @@
       
   
   
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alerting
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Alerting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alerting/rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules and limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -449,10 +531,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -470,8 +552,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -683,10 +765,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -704,8 +786,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -786,6 +868,34 @@
     
   
     ADR 0001: schema-init job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/adr/0002-alert-rules-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0002: alert rules in a file
   
 
     
@@ -1013,6 +1123,26 @@ ignored by git.</p>
 <td>Password of the read-only ClickHouse user <code>tracemelt_reader</code> that the query API uses. Can be changed later; restart <code>clickhouse</code> and <code>api</code>.</td>
 </tr>
 <tr>
+<td><code>TRACEMELT_CLICKHOUSE_ALERT_PASSWORD</code></td>
+<td>generated</td>
+<td>Password of the ClickHouse user <code>tracemelt_alert</code> that the alert engine uses.</td>
+</tr>
+<tr>
+<td><code>TRACEMELT_ALERT_INTERVAL_SECONDS</code></td>
+<td><code>30</code></td>
+<td>Seconds between evaluation passes, minimum 5. Not written by <code>init-env.sh</code>.</td>
+</tr>
+<tr>
+<td><code>TRACEMELT_WEBHOOK_ALLOWED_HOSTS</code></td>
+<td><code>webhook-sink</code></td>
+<td>Hosts alert webhooks may be sent to. See <a href="../../alerting/rules/#where-webhooks-may-go">webhooks</a>. Not written by <code>init-env.sh</code>.</td>
+</tr>
+<tr>
+<td><code>TRACEMELT_WEBHOOK_PRIVATE_HOSTS</code></td>
+<td><code>webhook-sink</code></td>
+<td>Allowed hosts that may resolve to private addresses. Not written by <code>init-env.sh</code>.</td>
+</tr>
+<tr>
 <td><code>TRACEMELT_API_TOKEN</code></td>
 <td>generated</td>
 <td>Bearer token for the query API. Different from the ingest token.</td>
@@ -1070,6 +1200,8 @@ job on every <code>docker compose up</code>, see
 <code>otel_traces_trace_id_ts_mv</code>, <code>otel_metrics_gauge</code>, <code>otel_metrics_sum</code>,
 <code>otel_metrics_histogram</code>, <code>otel_metrics_exponential_histogram</code>,
 <code>otel_metrics_summary</code>.</p>
+<p>tracemelt owns one table, <code>alert_events</code>, created by the alert engine. See
+<a href="../../alerting/rules/#what-is-recorded">what is recorded</a>.</p>
 <p>Events are rows in <code>otel_logs</code> with <code>LogAttributes['tracemelt.event'] = 'true'</code>
 and <code>LogAttributes['event.name']</code> set.</p>
 <h2 id="limits">Limits</h2>
@@ -1114,6 +1246,7 @@ ClickHouse 26 seconds after it came back, with no duplicates.</p>
   before it reaches the on-disk queue. A collector crash loses that window.</li>
 <li><strong>Outages longer than 10 minutes drop data.</strong> Retries are bounded on
   purpose. Nothing alerts on queue size yet.</li>
+<li><strong>Alerting is basic.</strong> See <a href="../../alerting/rules/#limitations">alert limitations</a>.</li>
 <li><strong>One shared ingest token.</strong> No per-service credentials, no rate limits.</li>
 <li><strong>No TLS</strong>, no self-metrics pipeline, no backups, no PII redaction.</li>
 </ul>
@@ -1121,6 +1254,7 @@ ClickHouse 26 seconds after it came back, with no duplicates.</p>
 <ul>
 <li><a href="../../getting-started/quickstart/">Quickstart</a></li>
 <li><a href="../../api/query-api/">Query API reference</a></li>
+<li><a href="../../alerting/rules/">Alert rules and limitations</a></li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>
 </ul>
 
