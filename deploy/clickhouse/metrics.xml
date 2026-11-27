@@ -1,0 +1,11 @@
+<!-- Exposes ClickHouse's own metrics for the collector to scrape. The port is not
+     published to the host; only containers on the compose network can reach it. -->
+<clickhouse>
+  <prometheus>
+    <endpoint>/metrics</endpoint>
+    <port>9363</port>
+    <metrics>true</metrics>
+    <events>false</events>
+    <asynchronous_metrics>true</asynchronous_metrics>
+  </prometheus>
+</clickhouse>

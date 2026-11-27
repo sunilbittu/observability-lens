@@ -10,6 +10,8 @@ on:
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
       - "scripts/outage-test.sh"
+      - "scripts/backup.sh"
+      - "scripts/restore-test.sh"
       - ".github/workflows/stack.yml"
   push:
     branches: [main]
@@ -57,6 +59,11 @@ jobs:
 
       - name: Smoke test
         run: scripts/smoke.sh
+
+      - name: Backup and restore test
+        run: |
+          scripts/backup.sh
+          scripts/restore-test.sh "$(ls -t backups/*.zip | head -1)"
 
       - name: Outage test (60 second outage)
         run: scripts/outage-test.sh 60

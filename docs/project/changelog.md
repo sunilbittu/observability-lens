@@ -33,6 +33,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ClickHouse user `tracemelt_alert`: reads telemetry, writes only
   `alert_events`.
 - Demo webhook receiver in the `demo` profile.
+- Default redaction in the collector: values of sensitive attribute keys,
+  bearer tokens and card-shaped numbers are masked in attributes and log
+  bodies before storage.
+- Self-observability: the collector's own metrics and a short list of
+  ClickHouse metrics are collected, with shipped alert rules for the export
+  queue, free disk space and part count.
+- `scripts/backup.sh` and `scripts/restore-test.sh`, run in CI.
 - ClickHouse user `tracemelt_reader`: select-only, with time, memory and row
   limits it cannot raise.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify

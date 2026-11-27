@@ -26,6 +26,9 @@ nav:
       - Web UI: using-tracemelt/ui.md
   - Alerting:
       - Rules and limitations: alerting/rules.md
+  - Operations:
+      - Self-observability and data handling: operations/self-observability.md
+      - Back up and restore: operations/backup-and-restore.md
   - Reference:
       - Query API: api/query-api.md
       - Configuration: reference/configuration.md

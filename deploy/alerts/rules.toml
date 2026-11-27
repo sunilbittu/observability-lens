@@ -40,6 +40,47 @@ window_seconds = 60
 cooldown_seconds = 300
 webhook_url = "http://webhook-sink:8080/alerts"
 
+# --- the platform watching itself -------------------------------------------------
+# These use metrics the collector reports about itself and scrapes from ClickHouse.
+
+# Batches are waiting on disk because ClickHouse is slow or down. Data is dropped after
+# 10 minutes of failed retries, so this is the warning that loss is approaching.
+[[rule]]
+name = "collector-export-queue-backlog"
+signal = "metric_avg"
+metric = "otelcol_exporter_queue_size"
+service = "otelcol-contrib"
+comparator = ">"
+threshold = 50
+window_seconds = 120
+cooldown_seconds = 600
+webhook_url = "http://webhook-sink:8080/alerts"
+
+# Less than 10 GiB free where ClickHouse keeps its data. This is an absolute number of
+# bytes because there is no ratio signal yet: set it to about 20% of your disk.
+[[rule]]
+name = "clickhouse-disk-low"
+signal = "metric_avg"
+metric = "ClickHouseAsyncMetrics_FilesystemMainPathAvailableBytes"
+service = "tracemelt-clickhouse"
+comparator = "<"
+threshold = 10737418240
+window_seconds = 300
+cooldown_seconds = 3600
+webhook_url = "http://webhook-sink:8080/alerts"
+
+# Many parts in one partition means merges are not keeping up with inserts.
+[[rule]]
+name = "clickhouse-too-many-parts"
+signal = "metric_avg"
+metric = "ClickHouseAsyncMetrics_MaxPartCountForPartition"
+service = "tracemelt-clickhouse"
+comparator = ">"
+threshold = 150
+window_seconds = 300
+cooldown_seconds = 3600
+webhook_url = "http://webhook-sink:8080/alerts"
+
 # Used by scripts/smoke.sh to prove a rule fires and its webhook is delivered.
 [[rule]]
 name = "smoke-delivered"
