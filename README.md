@@ -1,7 +1,7 @@
 # tracemelt
 
-**Status: planned.** This repository currently contains documentation tooling
-only. There is no installable software here yet.
+**Status: prototype.** Only OTLP ingest into ClickHouse exists. There is no
+query API, UI, alert engine or SDK yet.
 
 tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces. OTLP is the ingest contract.
@@ -9,6 +9,18 @@ platform for metrics, events, logs and traces. OTLP is the ingest contract.
 - Docs: https://sunilbittu.github.io/observability-lens/
 - Roadmap: [docs/project/roadmap.md](docs/project/roadmap.md)
 - Changelog: [docs/project/changelog.md](docs/project/changelog.md)
+
+## Run the ingest stack
+
+```bash
+scripts/init-env.sh
+docker compose up -d --build
+scripts/smoke.sh
+```
+
+The last command must end with `smoke: all checks passed`. See the
+[quickstart](docs/getting-started/quickstart.md) for expected output and
+troubleshooting.
 
 ## Build the docs locally
 

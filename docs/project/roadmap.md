@@ -1,8 +1,8 @@
 # Roadmap
 
 !!! warning "Status: planned"
-    Everything below Phase -1 is planned work with no code in the repository.
-    There are no dates. Applies to: `dev` (no release exists).
+    Only items marked done have code in the repository. There are no dates.
+    Applies to: `dev` (no release exists).
 
 Phases are worked in order. A phase is complete only when its acceptance
 checks have been run and the results recorded.
@@ -19,20 +19,23 @@ State: in progress.
 | Navigation references only existing files | done |
 | Every page carries a status banner | done |
 | `/latest/` returns 200 | not done: no release exists, the site root points at `dev` |
-| Remaining Wave 1 pages (MELT model, architecture, data model, ports, environment variables, alerting limitations, no-data troubleshooting) | not done: they describe components that do not exist yet |
+| Ports and environment variables reference | done |
+| Remaining Wave 1 pages (MELT model, architecture, data model, alerting limitations, no-data troubleshooting) | not done: they describe components that do not exist yet |
 
 ## Phase 0: verify the quickstart
 
-State: blocked. The collector config, ClickHouse setup, query API, UI, alert
-engine and demo workload have to be added to the repository before anything
-can be verified.
+State: in progress. Ingest is verified: the collector accepts authenticated
+OTLP and writes traces, logs, events and metrics to ClickHouse. The query API,
+UI, alert engine and demo workload do not exist yet.
 
 Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.
 
 ## Phase 1: harden single-node
 
-State: planned.
+State: started. Done so far: secrets from the environment, token
+authenticated OTLP ingest, a persistent collector queue (tested with a 300
+second outage and a collector restart), ClickHouse with no published ports.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
