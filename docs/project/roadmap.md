@@ -20,16 +20,18 @@ State: in progress.
 | Every page carries a status banner | done |
 | `/latest/` returns 200 | not done: no release exists, the site root points at `dev` |
 | Ports and environment variables reference | done |
-| Remaining Wave 1 pages (MELT model, architecture, data model, alerting limitations, no-data troubleshooting) | not done: they describe components that do not exist yet |
+| Alerting limitations page | done |
+| Remaining Wave 1 pages (MELT model, architecture, data model, no-data troubleshooting) | not done: they describe components that do not exist yet |
 
 ## Phase 0: verify the quickstart
 
-State: in progress. Ingest is verified: the collector accepts authenticated
+State: done on 2026-11-27, with alerting limited as described in
+[alert limitations](../alerting/rules.md#limitations). Ingest is verified: the collector accepts authenticated
 OTLP and writes traces, logs, events and metrics to ClickHouse, the query API
 reads them back, and the web UI shows them, including the trace waterfall and
-the jump from a log record to its trace. A demo workload exists. The alert
-engine does not exist yet, so alert creation and webhook delivery are
-unverified.
+the jump from a log record to its trace. A demo workload exists. An alert
+rule fires and its webhook is delivered. Alert rules are created in a file,
+not in the UI.
 
 Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.
@@ -39,7 +41,8 @@ command has a recorded expected output.
 State: started. Done so far: secrets from the environment, token
 authenticated OTLP ingest, a persistent collector queue (tested with a 300
 second outage and a collector restart), ClickHouse with no published ports,
-query guardrails on a read-only ClickHouse user, a token guard on the API.
+query guardrails on a read-only ClickHouse user, a token guard on the API,
+a webhook allowlist with SSRF protection.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,

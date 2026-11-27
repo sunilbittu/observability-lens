@@ -24,6 +24,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Browser sign-in: `POST /api/session` exchanges the API token for an
   `HttpOnly` session cookie. Strict content security policy on every response.
 - Demo workload behind `docker compose --profile demo`.
+- Alert engine: `log_count`, `error_spans` and `metric_avg` threshold rules
+  from `deploy/alerts/rules.toml`, with cooldowns that survive a restart.
+- Alert webhooks with egress controls: host allowlist, public addresses only
+  unless a host is explicitly listed as private, loopback and link-local
+  always refused, no redirects, connection pinned to the checked address.
+- `alert_events` table, `GET /api/alerts` and an Alerts view in the UI.
+- ClickHouse user `tracemelt_alert`: reads telemetry, writes only
+  `alert_events`.
+- Demo webhook receiver in the `demo` profile.
 - ClickHouse user `tracemelt_reader`: select-only, with time, memory and row
   limits it cannot raise.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Smoke test against a running stack: ingest auth, every signal stored, query API
-# auth and results, and the read-only user's guardrails.
+# auth and results, database guardrails, and alerting with webhook egress controls.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 set -a; . ./.env; set +a
@@ -104,5 +104,42 @@ check "reader cannot raise its limits"    "Code: 164" "$(reader "SET max_executi
 check "reader cannot read other databases" "Code: 497" "$(reader "SELECT count() FROM system.users")"
 check "slow query killed by time limit"   "Code: 159" "$(reader "SELECT count() FROM numbers(100000000000) WHERE sipHash64(number) = 1")"
 check "large result killed by row limit"  "Code: 396" "$(reader "SELECT number FROM numbers(1000000)")"
+
+# --- alerting --------------------------------------------------------------
+# Two shipped rules watch for this marker: one sends to the demo receiver, one to the
+# cloud metadata address, which must be refused.
+alert_start=$(date +%s)
+marker='{"resourceLogs":[{"resource":'"$res"',"scopeLogs":[{"logRecords":[{"timeUnixNano":"'"$(date +%s)"'000000000","severityText":"INFO","body":{"stringValue":"tracemelt-smoke-alert"}}]}]}]}'
+check "alert marker accepted" 200 "$(post /v1/logs "$TRACEMELT_INGEST_TOKEN" "$marker")"
+alert_rows() { # rule kind outcome -> 1 once such a row exists since this run began
+  ch "SELECT toUInt8(count() > 0) FROM alert_events WHERE RuleName='$1' AND Kind='$2' AND Outcome='$3' AND Timestamp >= toDateTime($alert_start)" 2>/dev/null || echo 0
+}
+wait_alert() { # name rule kind outcome
+  local n=0 got=0
+  while [ $n -lt 90 ]; do
+    got=$(alert_rows "$2" "$3" "$4")
+    [ "$got" = "1" ] && break
+    sleep 1; n=$((n+1))
+  done
+  check "$1" 1 "$got"
+}
+alert_user() {
+  docker compose exec -T clickhouse sh -c \
+    'clickhouse-client --user tracemelt_alert --password "$TRACEMELT_CLICKHOUSE_ALERT_PASSWORD" --database "$CLICKHOUSE_DB" -q "$1" </dev/null >/dev/null 2>/tmp/err && echo ok || grep -o "Code: [0-9]*" /tmp/err | head -1' _ "$1"
+}
+
+wait_alert "alert rule fired"                         smoke-delivered fired ""
+wait_alert "webhook to metadata address blocked"      smoke-blocked delivery blocked
+check "blocked webhook says why" 1 "$(ch "SELECT toUInt8(count() > 0) FROM alert_events WHERE RuleName='smoke-blocked' AND Outcome='blocked' AND Detail LIKE '%allowlist%' AND Timestamp >= toDateTime($alert_start)")"
+if [ "$(docker compose ps --status running --format '{{.Service}}' webhook-sink 2>/dev/null)" = "webhook-sink" ]; then
+  wait_alert "webhook delivered to the demo receiver" smoke-delivered delivery delivered
+else
+  echo "SKIP  webhook delivery: the demo receiver is not running (start with --profile demo)"
+fi
+check "api lists alert events"              1 "$(get "/alerts?rule=smoke-delivered&since_minutes=5" | python3 -c 'import json,sys; print(int(len(json.load(sys.stdin)) > 0))')"
+check "alert user can read telemetry"       ok          "$(alert_user "SELECT count() FROM otel_logs")"
+check "alert user cannot write telemetry"   "Code: 497" "$(alert_user "INSERT INTO otel_logs (Body) SELECT 'x'")"
+check "alert user cannot drop telemetry"    "Code: 497" "$(alert_user "DROP TABLE otel_logs")"
+check "alert user cannot drop its own table" "Code: 497" "$(alert_user "DROP TABLE alert_events")"
 
 [ $fail = 0 ] && echo "smoke: all checks passed" || { echo "smoke: FAILED"; exit 1; }

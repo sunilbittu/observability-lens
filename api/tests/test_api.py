@@ -50,7 +50,7 @@ def http():
 
 
 PROTECTED = ["/api/services", "/api/traces", f"/api/traces/{TRACE}", "/api/logs",
-             "/api/events", "/api/metrics", "/api/metrics/gauge?name=x"]
+             "/api/events", "/api/alerts", "/api/metrics", "/api/metrics/gauge?name=x"]
 
 
 @pytest.mark.parametrize("path", PROTECTED)
@@ -171,3 +171,10 @@ def test_security_headers_on_api_and_ui(http, fake):
 def test_ui_shell_is_served_without_a_token(http):
     response = http.get("/")
     assert response.status_code == 200 and "text/html" in response.headers["content-type"]
+
+
+def test_alerts_is_empty_before_the_engine_has_created_its_table(http, monkeypatch):
+    client = FakeClient(error=DatabaseError("Code: 60. DB::Exception: Unknown table expression identifier 'alert_events'"))
+    monkeypatch.setattr(main, "get_client", lambda: client)
+    response = http.get("/api/alerts", headers=AUTH)
+    assert response.status_code == 200 and response.json() == []

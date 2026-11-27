@@ -28,6 +28,10 @@ ignored by git.
 | `TRACEMELT_CLICKHOUSE_USER` | `tracemelt` | ClickHouse user, created on first start. |
 | `TRACEMELT_CLICKHOUSE_PASSWORD` | generated | Password for that user. |
 | `TRACEMELT_CLICKHOUSE_READER_PASSWORD` | generated | Password of the read-only ClickHouse user `tracemelt_reader` that the query API uses. Can be changed later; restart `clickhouse` and `api`. |
+| `TRACEMELT_CLICKHOUSE_ALERT_PASSWORD` | generated | Password of the ClickHouse user `tracemelt_alert` that the alert engine uses. |
+| `TRACEMELT_ALERT_INTERVAL_SECONDS` | `30` | Seconds between evaluation passes, minimum 5. Not written by `init-env.sh`. |
+| `TRACEMELT_WEBHOOK_ALLOWED_HOSTS` | `webhook-sink` | Hosts alert webhooks may be sent to. See [webhooks](../alerting/rules.md#where-webhooks-may-go). Not written by `init-env.sh`. |
+| `TRACEMELT_WEBHOOK_PRIVATE_HOSTS` | `webhook-sink` | Allowed hosts that may resolve to private addresses. Not written by `init-env.sh`. |
 | `TRACEMELT_API_TOKEN` | generated | Bearer token for the query API. Different from the ingest token. |
 | `TRACEMELT_CLICKHOUSE_DB` | `otel` | Database that holds the `otel_*` tables. |
 | `TRACEMELT_RETENTION` | `72h` | TTL for all signals. Applied when tables are created; changing it later does not alter existing tables. |
@@ -52,6 +56,9 @@ job on every `docker compose up`, see
 `otel_traces_trace_id_ts_mv`, `otel_metrics_gauge`, `otel_metrics_sum`,
 `otel_metrics_histogram`, `otel_metrics_exponential_histogram`,
 `otel_metrics_summary`.
+
+tracemelt owns one table, `alert_events`, created by the alert engine. See
+[what is recorded](../alerting/rules.md#what-is-recorded).
 
 Events are rows in `otel_logs` with `LogAttributes['tracemelt.event'] = 'true'`
 and `LogAttributes['event.name']` set.
@@ -82,6 +89,7 @@ ClickHouse 26 seconds after it came back, with no duplicates.
   before it reaches the on-disk queue. A collector crash loses that window.
 - **Outages longer than 10 minutes drop data.** Retries are bounded on
   purpose. Nothing alerts on queue size yet.
+- **Alerting is basic.** See [alert limitations](../alerting/rules.md#limitations).
 - **One shared ingest token.** No per-service credentials, no rate limits.
 - **No TLS**, no self-metrics pipeline, no backups, no PII redaction.
 
@@ -89,4 +97,5 @@ ClickHouse 26 seconds after it came back, with no duplicates.
 
 - [Quickstart](../getting-started/quickstart.md)
 - [Query API reference](../api/query-api.md)
+- [Alert rules and limitations](../alerting/rules.md)
 - [Roadmap](../project/roadmap.md)
