@@ -23,6 +23,7 @@ nav:
   - Getting started:
       - Quickstart: getting-started/quickstart.md
   - Reference:
+      - Query API: api/query-api.md
       - Configuration: reference/configuration.md
   - Project:
       - Roadmap: project/roadmap.md

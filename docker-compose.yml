@@ -10,9 +10,13 @@ services:
       CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
       CLICKHOUSE_USER: ${TRACEMELT_CLICKHOUSE_USER:?run scripts/init-env.sh}
       CLICKHOUSE_PASSWORD: ${TRACEMELT_CLICKHOUSE_PASSWORD:?run scripts/init-env.sh}
+      # Read by deploy/clickhouse/reader.xml for the query API's read-only user.
+      TRACEMELT_CLICKHOUSE_READER_PASSWORD: ${TRACEMELT_CLICKHOUSE_READER_PASSWORD:?run scripts/init-env.sh}
+      TRACEMELT_CLICKHOUSE_READER_GRANT: GRANT SELECT ON ${TRACEMELT_CLICKHOUSE_DB:-otel}.*
     # No published ports: ClickHouse is reachable only on the compose network.
     volumes:
       - clickhouse-data:/var/lib/clickhouse
+      - ./deploy/clickhouse/reader.xml:/etc/clickhouse-server/users.d/tracemelt-reader.xml:ro
     ulimits:
       nofile:
         soft: 262144
@@ -71,6 +75,30 @@ services:
         condition: service_completed_successfully
       schema-init:
         condition: service_completed_successfully
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    image: tracemelt/api:dev
+    environment:
+      TRACEMELT_API_TOKEN: ${TRACEMELT_API_TOKEN:?run scripts/init-env.sh}
+      TRACEMELT_CLICKHOUSE_HOST: clickhouse
+      TRACEMELT_CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
+      TRACEMELT_CLICKHOUSE_READER_USER: tracemelt_reader
+      TRACEMELT_CLICKHOUSE_READER_PASSWORD: ${TRACEMELT_CLICKHOUSE_READER_PASSWORD:?run scripts/init-env.sh}
+    mem_limit: 256m
+    read_only: true
+    ports:
+      # Loopback only. The bearer token is a temporary guard, not a login system.
+      - "127.0.0.1:${TRACEMELT_API_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      clickhouse:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

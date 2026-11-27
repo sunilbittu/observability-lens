@@ -17,6 +17,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - One-shot `schema-init` job creates the exporter's tables, so the collector
   can start and queue data while ClickHouse is down.
 - `scripts/outage-test.sh` to test durability across a ClickHouse outage.
+- Read-only query API (FastAPI) for services, traces, logs, events and gauge
+  metrics, guarded by a bearer token.
+- ClickHouse user `tracemelt_reader`: select-only, with time, memory and row
+  limits it cannot raise.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify
   ingest end to end.
 - Configuration reference page.

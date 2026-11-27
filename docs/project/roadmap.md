@@ -25,8 +25,8 @@ State: in progress.
 ## Phase 0: verify the quickstart
 
 State: in progress. Ingest is verified: the collector accepts authenticated
-OTLP and writes traces, logs, events and metrics to ClickHouse. The query API,
-UI, alert engine and demo workload do not exist yet.
+OTLP and writes traces, logs, events and metrics to ClickHouse, and the query
+API reads them back. The UI, alert engine and demo workload do not exist yet.
 
 Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.
@@ -35,7 +35,8 @@ command has a recorded expected output.
 
 State: started. Done so far: secrets from the environment, token
 authenticated OTLP ingest, a persistent collector queue (tested with a 300
-second outage and a collector restart), ClickHouse with no published ports.
+second outage and a collector restart), ClickHouse with no published ports,
+query guardrails on a read-only ClickHouse user, a token guard on the API.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,

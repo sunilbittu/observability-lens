@@ -1,0 +1,27 @@
+<!-- Read-only user for the query API. Limits live in the profile, and readonly=1
+     means the client cannot raise them. -->
+<clickhouse>
+  <profiles>
+    <tracemelt_reader>
+      <readonly>1</readonly>
+      <max_execution_time>10</max_execution_time>
+      <max_memory_usage>1000000000</max_memory_usage>
+      <max_result_rows>10000</max_result_rows>
+      <result_overflow_mode>throw</result_overflow_mode>
+      <max_concurrent_queries_for_user>16</max_concurrent_queries_for_user>
+    </tracemelt_reader>
+  </profiles>
+  <users>
+    <tracemelt_reader>
+      <password from_env="TRACEMELT_CLICKHOUSE_READER_PASSWORD"/>
+      <profile>tracemelt_reader</profile>
+      <quota>default</quota>
+      <networks>
+        <ip>::/0</ip>
+      </networks>
+      <grants>
+        <query from_env="TRACEMELT_CLICKHOUSE_READER_GRANT"/>
+      </grants>
+    </tracemelt_reader>
+  </users>
+</clickhouse>

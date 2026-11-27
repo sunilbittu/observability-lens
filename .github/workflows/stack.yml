@@ -1,24 +1,38 @@
-name: ingest-smoke
+name: stack
 
 on:
   pull_request:
     paths:
       - "docker-compose.yml"
       - "deploy/**"
+      - "api/**"
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
       - "scripts/outage-test.sh"
-      - ".github/workflows/ingest-smoke.yml"
+      - ".github/workflows/stack.yml"
   push:
     branches: [main]
     paths:
       - "docker-compose.yml"
       - "deploy/**"
+      - "api/**"
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
       - "scripts/outage-test.sh"
 
 jobs:
+  api-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r api/requirements-dev.txt
+      - run: python -m pytest -q
+        working-directory: api
+
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 10
