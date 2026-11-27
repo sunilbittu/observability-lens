@@ -1,8 +1,8 @@
 # tracemelt
 
 !!! warning "Status: prototype"
-    OTLP ingest into ClickHouse, a read-only query API, a web UI and a basic
-    alert engine exist. There is no SDK yet. Applies to: `dev` (no release exists).
+    OTLP ingest into ClickHouse, a read-only query API, a web UI, a basic
+    alert engine and unpublished Node.js and Python SDKs exist. Applies to: `dev` (no release exists).
 
 tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces (MELT). It is intended to be
@@ -17,7 +17,7 @@ self-hostable and licensed under Apache-2.0.
 | Query API (read-only, token guarded, gauges only for metrics) | prototype, verified 2026-11-27 |
 | Web UI (overview, traces with waterfall, logs, gauge metrics, events) | prototype, checked by hand 2026-11-27 |
 | Alert engine (three threshold signals, webhook with an allowlist; see [limitations](alerting/rules.md#limitations)) | prototype, verified 2026-11-27 |
-| Node.js and Python SDKs | planned |
+| Node.js and Python SDKs (not on npm or PyPI; see [limitations](instrumentation/sdks.md#limitations)) | prototype, verified 2026-11-28 |
 | Infrastructure metrics receivers | planned |
 
 "Planned" means no code for it is in the repository.
@@ -34,6 +34,7 @@ The first two items are implemented in the prototype. The rest are design decisi
 ## Where to go next
 
 - [Quickstart](getting-started/quickstart.md): start the stack and prove data reaches ClickHouse.
+- [Node.js and Python SDKs](instrumentation/sdks.md): send telemetry from an application.
 - [Use the web UI](using-tracemelt/ui.md): sign in and find a failed request.
 - [Alert rules and limitations](alerting/rules.md)
 - [Self-observability and data handling](operations/self-observability.md): what tracemelt reports about itself and what it masks.

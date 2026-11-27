@@ -1,10 +1,10 @@
 # Quickstart
 
-!!! warning "Status: prototype, ingest only"
+!!! warning "Status: prototype"
     Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
     contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
     OTLP ingest into ClickHouse, the query API, the web UI and alerting.
-    There is no SDK yet. Applies to: `dev`.
+    The SDKs have their own page. Applies to: `dev`.
 
 This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.
@@ -80,7 +80,8 @@ metadata address is blocked.
 
 ## 4. Send your own telemetry
 
-Point any OpenTelemetry SDK at the collector:
+Use the [Node.js or Python SDK](../instrumentation/sdks.md), or point any
+OpenTelemetry SDK at the collector:
 
 ```bash
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4318
@@ -143,6 +144,7 @@ docker compose down -v     # deletes stored telemetry and the collector queue
 
 ## Related
 
+- [Node.js and Python SDKs](../instrumentation/sdks.md)
 - [Use the web UI](../using-tracemelt/ui.md)
 - [Alert rules and limitations](../alerting/rules.md)
 - [Query API reference](../api/query-api.md): endpoints and guardrails.

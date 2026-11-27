@@ -1,0 +1,41 @@
+{
+  "name": "tracemelt",
+  "version": "0.0.0",
+  "description": "Thin wrapper over the OpenTelemetry Node.js SDK for tracemelt. Prototype, unpublished.",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "register.js",
+    "lib/",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./register": "./register.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
+  "dependencies": {
+    "@opentelemetry/api": "1.10.0",
+    "@opentelemetry/auto-instrumentations-node": "0.83.1",
+    "@opentelemetry/core": "3.1.1",
+    "@opentelemetry/exporter-logs-otlp-proto": "0.301.2",
+    "@opentelemetry/exporter-metrics-otlp-proto": "0.301.2",
+    "@opentelemetry/exporter-trace-otlp-proto": "0.301.2",
+    "@opentelemetry/resources": "3.1.1",
+    "@opentelemetry/sdk-logs": "3.1.1",
+    "@opentelemetry/sdk-metrics": "3.1.1",
+    "@opentelemetry/sdk-node": "0.301.2",
+    "@opentelemetry/sdk-trace": "3.1.1"
+  }
+}

@@ -47,8 +47,10 @@ collector and ClickHouse self-metrics with alert rules, default redaction,
 backup with a tested restore into a scratch database.
 
 Not done: TLS, rate limits, per-service ingest credentials, OIDC for the UI,
-an alert for a full ClickHouse outage, a disk alert as a percentage, the SDKs
-and their fail-open tests.
+an alert for a full ClickHouse outage, a disk alert as a percentage.
+
+The Node.js and Python SDKs exist with fail-open, overload and shutdown
+tests. They are not published.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
