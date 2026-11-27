@@ -482,6 +482,34 @@
   
   
     <li class="md-nav__item">
+      <a href="api/query-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/configuration/" class="md-nav__link">
         
   
@@ -730,8 +758,8 @@
 <h1 id="tracemelt">tracemelt</h1>
 <div class="admonition warning">
 <p class="admonition-title">Status: prototype</p>
-<p>Only OTLP ingest into ClickHouse exists. There is no query API, UI, alert
-engine or SDK yet. Applies to: <code>dev</code> (no release exists).</p>
+<p>OTLP ingest into ClickHouse and a read-only query API exist. There is no
+UI, alert engine or SDK yet. Applies to: <code>dev</code> (no release exists).</p>
 </div>
 <p>tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces (MELT). It is intended to be
@@ -754,8 +782,8 @@ self-hostable and licensed under Apache-2.0.</p>
 <td>prototype, verified 2026-11-27</td>
 </tr>
 <tr>
-<td>Query API</td>
-<td>planned</td>
+<td>Query API (read-only, token guarded, gauges only for metrics)</td>
+<td>prototype, verified 2026-11-27</td>
 </tr>
 <tr>
 <td>Web UI</td>
@@ -787,6 +815,7 @@ self-hostable and licensed under Apache-2.0.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="getting-started/quickstart/">Quickstart</a>: start the stack and prove data reaches ClickHouse.</li>
+<li><a href="api/query-api/">Query API reference</a>: endpoints, limits and guardrails.</li>
 <li><a href="reference/configuration/">Configuration reference</a>: ports, environment variables, limits and known limitations.</li>
 <li><a href="project/roadmap/">Roadmap</a>: phases, their acceptance criteria and current state.</li>
 <li><a href="project/changelog/">Changelog</a>: what has changed in this repository.</li>

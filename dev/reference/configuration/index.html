@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://sunilbittu.github.io/observability-lens/dev/reference/configuration/">
       
       
-        <link rel="prev" href="../../getting-started/quickstart/">
+        <link rel="prev" href="../../api/query-api/">
       
       
         <link rel="next" href="../../project/roadmap/">
@@ -398,6 +398,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/query-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -855,6 +883,12 @@ Applies to: <code>dev</code>.</p>
 <td>Health check, no authentication</td>
 </tr>
 <tr>
+<td>8000</td>
+<td>api</td>
+<td><code>127.0.0.1</code> only</td>
+<td><a href="../../api/query-api/">Query API</a>, bearer token required except <code>/api/health</code></td>
+</tr>
+<tr>
 <td>8123, 9000</td>
 <td>ClickHouse</td>
 <td>not published</td>
@@ -892,6 +926,16 @@ ignored by git.</p>
 <td>Password for that user.</td>
 </tr>
 <tr>
+<td><code>TRACEMELT_CLICKHOUSE_READER_PASSWORD</code></td>
+<td>generated</td>
+<td>Password of the read-only ClickHouse user <code>tracemelt_reader</code> that the query API uses. Can be changed later; restart <code>clickhouse</code> and <code>api</code>.</td>
+</tr>
+<tr>
+<td><code>TRACEMELT_API_TOKEN</code></td>
+<td>generated</td>
+<td>Bearer token for the query API. Different from the ingest token.</td>
+</tr>
+<tr>
 <td><code>TRACEMELT_CLICKHOUSE_DB</code></td>
 <td><code>otel</code></td>
 <td>Database that holds the <code>otel_*</code> tables.</td>
@@ -920,6 +964,11 @@ ignored by git.</p>
 <td><code>TRACEMELT_COLLECTOR_HEALTH_PORT</code></td>
 <td><code>13133</code></td>
 <td>Host port for the collector health check.</td>
+</tr>
+<tr>
+<td><code>TRACEMELT_API_PORT</code></td>
+<td><code>8000</code></td>
+<td>Host port for the query API.</td>
 </tr>
 </tbody>
 </table>
@@ -984,6 +1033,7 @@ ClickHouse 26 seconds after it came back, with no duplicates.</p>
 <h2 id="related">Related</h2>
 <ul>
 <li><a href="../../getting-started/quickstart/">Quickstart</a></li>
+<li><a href="../../api/query-api/">Query API reference</a></li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>
 </ul>
 

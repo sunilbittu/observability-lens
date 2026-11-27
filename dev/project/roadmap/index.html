@@ -404,6 +404,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/query-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/configuration/" class="md-nav__link">
         
   
@@ -851,14 +879,15 @@ checks have been run and the results recorded.</p>
 </table>
 <h2 id="phase-0-verify-the-quickstart">Phase 0: verify the quickstart</h2>
 <p>State: in progress. Ingest is verified: the collector accepts authenticated
-OTLP and writes traces, logs, events and metrics to ClickHouse. The query API,
-UI, alert engine and demo workload do not exist yet.</p>
+OTLP and writes traces, logs, events and metrics to ClickHouse, and the query
+API reads them back. The UI, alert engine and demo workload do not exist yet.</p>
 <p>Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.</p>
 <h2 id="phase-1-harden-single-node">Phase 1: harden single-node</h2>
 <p>State: started. Done so far: secrets from the environment, token
 authenticated OTLP ingest, a persistent collector queue (tested with a 300
-second outage and a collector restart), ClickHouse with no published ports.</p>
+second outage and a collector restart), ClickHouse with no published ports,
+query guardrails on a read-only ClickHouse user, a token guard on the API.</p>
 <p>Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
 webhook allowlisting with SSRF protection, self-metrics, disk and retention

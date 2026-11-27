@@ -404,6 +404,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/query-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/configuration/" class="md-nav__link">
         
   
@@ -782,6 +810,10 @@ to this repository. Applies to: <code>dev</code>.</p>
 <li>One-shot <code>schema-init</code> job creates the exporter's tables, so the collector
   can start and queue data while ClickHouse is down.</li>
 <li><code>scripts/outage-test.sh</code> to test durability across a ClickHouse outage.</li>
+<li>Read-only query API (FastAPI) for services, traces, logs, events and gauge
+  metrics, guarded by a bearer token.</li>
+<li>ClickHouse user <code>tracemelt_reader</code>: select-only, with time, memory and row
+  limits it cannot raise.</li>
 <li><code>scripts/init-env.sh</code> to generate secrets and <code>scripts/smoke.sh</code> to verify
   ingest end to end.</li>
 <li>Configuration reference page.</li>

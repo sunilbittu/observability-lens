@@ -14,7 +14,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../../reference/configuration/">
+        <link rel="next" href="../../api/query-api/">
       
       
         
@@ -541,6 +541,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/query-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/configuration/" class="md-nav__link">
         
   
@@ -846,14 +874,14 @@
 <p class="admonition-title">Status: prototype, ingest only</p>
 <p>Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
 contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
-OTLP ingest into ClickHouse. There is no UI, query API, alerting or SDK
-yet. Applies to: <code>dev</code>.</p>
+OTLP ingest into ClickHouse and the query API. There is no UI, alerting
+or SDK yet. Applies to: <code>dev</code>.</p>
 </div>
 <p>This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.</p>
 <h2 id="before-you-start">Before you start</h2>
-<p>You need Docker with Compose v2, <code>curl</code> and <code>openssl</code>. Ports <code>4317</code>, <code>4318</code>
-and <code>13133</code> must be free on loopback, or change them in <code>.env</code> after step 1.</p>
+<p>You need Docker with Compose v2, <code>curl</code>, <code>openssl</code> and <code>python3</code>. Ports <code>4317</code>,
+<code>4318</code>, <code>8000</code> and <code>13133</code> must be free on loopback, or change them in <code>.env</code> after step 1.</p>
 <h2 id="1-generate-secrets">1. Generate secrets</h2>
 <div class="highlight"><pre><span></span><code>scripts/init-env.sh
 </code></pre></div>
@@ -867,7 +895,8 @@ overwrite an existing <code>.env</code>.</p>
 docker<span class="w"> </span>compose<span class="w"> </span>ps<span class="w"> </span>--format<span class="w"> </span><span class="s1">'{{.Service}}\t{{.State}}'</span>
 </code></pre></div>
 <p>Expected output, after the images have been pulled:</p>
-<div class="highlight"><pre><span></span><code>clickhouse  running
+<div class="highlight"><pre><span></span><code>api running
+clickhouse  running
 collector   running
 </code></pre></div>
 <h2 id="3-run-the-smoke-test">3. Run the smoke test</h2>
@@ -876,28 +905,26 @@ collector   running
 <p>Expected output:</p>
 <div class="highlight"><pre><span></span><code>PASS  collector health (200)
 PASS  logs without token rejected (401)
-PASS  logs with wrong token rejected (401)
-PASS  traces without token rejected (401)
-PASS  metrics without token rejected (401)
-PASS  traces accepted (200)
-PASS  logs accepted (200)
-PASS  metrics accepted (200)
-PASS  trace stored (1)
-PASS  log stored with trace id (1)
-PASS  event stored as tagged log (1)
-PASS  gauge stored (1)
-PASS  rejected requests stored nothing (2)
+...
+PASS  slow query killed by time limit (Code: 159)
+PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 </code></pre></div>
+<p>There are 33 <code>PASS</code> lines. Any <code>FAIL</code> line names the check and what it got.</p>
 <p>The test sends one span, two log records (one of them an event) and one gauge
-over OTLP HTTP, then reads them back from ClickHouse.</p>
+over OTLP HTTP, reads them back from ClickHouse and through the query API,
+and checks that the API's database user is read-only and limited.</p>
 <h2 id="4-send-your-own-telemetry">4. Send your own telemetry</h2>
 <p>Point any OpenTelemetry SDK at the collector:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://127.0.0.1:4318
 <span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_HEADERS</span><span class="o">=</span><span class="s2">"Authorization=Bearer </span><span class="k">$(</span>grep<span class="w"> </span>TRACEMELT_INGEST_TOKEN<span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="o">=</span><span class="w"> </span>-f2<span class="k">)</span><span class="s2">"</span>
 </code></pre></div>
-<p>There is no UI to view the data yet. To look at it, query ClickHouse:</p>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>clickhouse<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">'clickhouse-client --user "$CLICKHOUSE_USER" --password "$CLICKHOUSE_PASSWORD" --database "$CLICKHOUSE_DB" -q "SELECT ServiceName, count() FROM otel_logs GROUP BY ServiceName"'</span>
+<p>There is no UI yet. Read the data back through the query API:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>grep<span class="w"> </span>TRACEMELT_API_TOKEN<span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="o">=</span><span class="w"> </span>-f2<span class="k">)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="s2">"http://127.0.0.1:8000/api/services"</span>
+</code></pre></div>
+<p>Expected output, with your own service names:</p>
+<div class="highlight"><pre><span></span><code>[{"service":"smoke-1795785046-21234","spans":1,"error_spans":0}]
 </code></pre></div>
 <h2 id="if-something-fails">If something fails</h2>
 <table>
@@ -932,6 +959,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"
 </code></pre></div>
 <h2 id="related">Related</h2>
 <ul>
+<li><a href="../../api/query-api/">Query API reference</a>: endpoints and guardrails.</li>
 <li><a href="../../reference/configuration/">Configuration reference</a>: ports, environment variables, limits.</li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>
 </ul>
