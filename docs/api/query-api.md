@@ -10,8 +10,9 @@ on `127.0.0.1:8000` by default.
 
 ## Authentication
 
-Every endpoint except `/api/health` requires
-`Authorization: Bearer <TRACEMELT_API_TOKEN>`. A missing or wrong token returns
+Every endpoint except `/api/health` and `POST /api/session` requires
+`Authorization: Bearer <TRACEMELT_API_TOKEN>` or the session cookie described
+below. A missing or wrong token returns
 `401`. The ingest token is not accepted.
 
 This single shared token is a temporary guard. There are no users, roles or
@@ -28,6 +29,15 @@ Expected output after the smoke test has run, with your own service names:
 [{"service":"smoke-1795785046-21234","spans":1,"error_spans":0}]
 ```
 
+## Browser session
+
+The web UI signs in with `POST /api/session` and a JSON body
+`{"token": "<TRACEMELT_API_TOKEN>"}`. A correct token returns `204` and sets
+the cookie `tracemelt_session` (`HttpOnly`, `SameSite=Strict`, 12 hours). The
+cookie value is derived from the token and is not the token. `DELETE
+/api/session` clears it. `GET /api/session` returns `{"signed_in": true}` or
+`401`.
+
 ## Endpoints
 
 All endpoints are `GET` and return a JSON array.
@@ -36,7 +46,7 @@ All endpoints are `GET` and return a JSON array.
 |---|---|---|
 | `/api/health` | none | `{"status":"ok"}`, or `503` when ClickHouse does not answer. No token needed. |
 | `/api/services` | `since_minutes` | Services with span and error span counts. |
-| `/api/traces` | `since_minutes`, `limit`, `service`, `errors_only` | Recent traces, newest first. |
+| `/api/traces` | `since_minutes`, `limit`, `service`, `errors_only` | Recent traces, newest first. `service` keeps traces with at least one span from that service and still reports the whole trace. |
 | `/api/traces/{trace_id}` | none | Every span of one trace, up to 5000. `404` if unknown. |
 | `/api/logs` | `since_minutes`, `limit`, `service`, `q`, `trace_id` | Log records, newest first. `q` is a case-insensitive substring match on the body. |
 | `/api/events` | `since_minutes`, `limit`, `service`, `name` | Log records tagged `tracemelt.event = "true"`. |

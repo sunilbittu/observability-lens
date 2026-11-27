@@ -87,6 +87,16 @@ check "api lists the event"               1 "$(get "/events?service=$run&name=or
 check "api lists the service"             1 "$(get "/services" | python3 -c 'import json,sys; print(sum(1 for r in json.load(sys.stdin) if r["service"]==sys.argv[1]))' "$run")"
 check "api charts the gauge"              1 "$(get "/metrics/gauge?name=smoke.gauge&service=$run" | count)"
 
+ui="http://127.0.0.1:${TRACEMELT_API_PORT:-8000}"
+jar=$(mktemp)
+check "ui shell is served"                200 "$(curl -s -o /dev/null -w '%{http_code}' -m 10 "$ui/")"
+check "ui sends a content security policy" 1 "$(curl -s -D - -o /dev/null -m 10 "$ui/" | grep -ci "^content-security-policy: default-src 'self'")"
+check "sign in with wrong token rejected" 401 "$(curl -s -o /dev/null -w '%{http_code}' -m 10 -X POST "$api/session" -H 'Content-Type: application/json' --data '{"token":"wrong"}')"
+check "sign in sets a session"            204 "$(curl -s -o /dev/null -w '%{http_code}' -m 10 -c "$jar" -X POST "$api/session" -H 'Content-Type: application/json' --data '{"token":"'"$TRACEMELT_API_TOKEN"'"}')"
+check "session cookie is HttpOnly"        1 "$(grep -c '#HttpOnly_' "$jar")"
+check "session cookie reads the api"      200 "$(curl -s -o /dev/null -w '%{http_code}' -m 10 -b "$jar" "$api/traces")"
+rm -f "$jar"
+
 check "reader can select"                 ok          "$(reader "SELECT count() FROM otel_logs")"
 check "reader cannot insert"              "Code: 497" "$(reader "INSERT INTO otel_logs (Body) SELECT 'x'")"
 check "reader cannot drop"                "Code: 497" "$(reader "DROP TABLE otel_logs")"

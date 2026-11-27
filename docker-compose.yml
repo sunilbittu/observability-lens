@@ -86,6 +86,8 @@ services:
       TRACEMELT_CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
       TRACEMELT_CLICKHOUSE_READER_USER: tracemelt_reader
       TRACEMELT_CLICKHOUSE_READER_PASSWORD: ${TRACEMELT_CLICKHOUSE_READER_PASSWORD:?run scripts/init-env.sh}
+      # Set to 1 when the UI is served over HTTPS so the session cookie is marked Secure.
+      TRACEMELT_COOKIE_SECURE: ${TRACEMELT_COOKIE_SECURE:-0}
     mem_limit: 256m
     read_only: true
     ports:
@@ -99,6 +101,23 @@ services:
     depends_on:
       clickhouse:
         condition: service_healthy
+    restart: unless-stopped
+
+  # Optional sample workload: docker compose --profile demo up -d
+  demo:
+    profiles: [demo]
+    image: python:3.12.16-slim-bookworm
+    command: ["python", "-u", "/demo/generate.py"]
+    environment:
+      TRACEMELT_ENDPOINT: http://collector:4318
+      TRACEMELT_INGEST_TOKEN: ${TRACEMELT_INGEST_TOKEN:?run scripts/init-env.sh}
+    volumes:
+      - ./demo/generate.py:/demo/generate.py:ro
+    user: "10001:10001"
+    read_only: true
+    mem_limit: 64m
+    depends_on:
+      - collector
     restart: unless-stopped
 
 volumes:

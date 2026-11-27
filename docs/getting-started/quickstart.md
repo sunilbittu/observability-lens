@@ -3,8 +3,8 @@
 !!! warning "Status: prototype, ingest only"
     Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
     contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
-    OTLP ingest into ClickHouse and the query API. There is no UI, alerting
-    or SDK yet. Applies to: `dev`.
+    OTLP ingest into ClickHouse, the query API and the web UI. There is no
+    alerting or SDK yet. Applies to: `dev`.
 
 This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.
@@ -32,7 +32,7 @@ overwrite an existing `.env`.
 ## 2. Start the stack
 
 ```bash
-docker compose up -d --build
+docker compose --profile demo up -d --build
 docker compose ps --format '{{.Service}}\t{{.State}}'
 ```
 
@@ -42,7 +42,11 @@ Expected output, after the images have been pulled:
 api	running
 clickhouse	running
 collector	running
+demo	running
 ```
+
+The `demo` profile adds a sample workload: three services that send traces,
+logs, events and gauges. Leave the flag out to run without it.
 
 ## 3. Run the smoke test
 
@@ -61,7 +65,7 @@ PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 ```
 
-There are 33 `PASS` lines. Any `FAIL` line names the check and what it got.
+There are 39 `PASS` lines. Any `FAIL` line names the check and what it got.
 
 The test sends one span, two log records (one of them an event) and one gauge
 over OTLP HTTP, reads them back from ClickHouse and through the query API,
@@ -76,7 +80,13 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4318
 export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer $(grep TRACEMELT_INGEST_TOKEN .env | cut -d= -f2)"
 ```
 
-There is no UI yet. Read the data back through the query API:
+## 5. Look at it
+
+Open `http://127.0.0.1:8000/`, paste the value of `TRACEMELT_API_TOKEN` from
+`.env` and sign in. With the demo workload running, **Overview** lists
+`storefront`, `inventory` and `payments`. See [Use the web UI](../using-tracemelt/ui.md).
+
+The same data is available from the query API:
 
 ```bash
 TOKEN=$(grep TRACEMELT_API_TOKEN .env | cut -d= -f2)
@@ -107,6 +117,7 @@ docker compose down -v     # deletes stored telemetry and the collector queue
 
 ## Related
 
+- [Use the web UI](../using-tracemelt/ui.md)
 - [Query API reference](../api/query-api.md): endpoints and guardrails.
 - [Configuration reference](../reference/configuration.md): ports, environment variables, limits.
 - [Roadmap](../project/roadmap.md)

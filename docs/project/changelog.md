@@ -19,6 +19,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `scripts/outage-test.sh` to test durability across a ClickHouse outage.
 - Read-only query API (FastAPI) for services, traces, logs, events and gauge
   metrics, guarded by a bearer token.
+- Web UI served by the query API: overview, traces with a span waterfall,
+  logs with a jump to the trace, gauge charts and events.
+- Browser sign-in: `POST /api/session` exchanges the API token for an
+  `HttpOnly` session cookie. Strict content security policy on every response.
+- Demo workload behind `docker compose --profile demo`.
 - ClickHouse user `tracemelt_reader`: select-only, with time, memory and row
   limits it cannot raise.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify

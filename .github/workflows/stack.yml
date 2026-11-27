@@ -6,6 +6,7 @@ on:
       - "docker-compose.yml"
       - "deploy/**"
       - "api/**"
+      - "demo/**"
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
       - "scripts/outage-test.sh"

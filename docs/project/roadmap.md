@@ -25,8 +25,11 @@ State: in progress.
 ## Phase 0: verify the quickstart
 
 State: in progress. Ingest is verified: the collector accepts authenticated
-OTLP and writes traces, logs, events and metrics to ClickHouse, and the query
-API reads them back. The UI, alert engine and demo workload do not exist yet.
+OTLP and writes traces, logs, events and metrics to ClickHouse, the query API
+reads them back, and the web UI shows them, including the trace waterfall and
+the jump from a log record to its trace. A demo workload exists. The alert
+engine does not exist yet, so alert creation and webhook delivery are
+unverified.
 
 Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.
