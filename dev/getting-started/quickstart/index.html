@@ -14,7 +14,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../../api/query-api/">
+        <link rel="next" href="../../using-tracemelt/ui/">
       
       
         
@@ -439,6 +439,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#5-look-at-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Look at it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#if-something-fails" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -512,7 +523,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Using tracemelt
   
 
     
@@ -525,6 +536,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using tracemelt
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../using-tracemelt/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -612,10 +705,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -633,8 +726,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -817,6 +910,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#5-look-at-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Look at it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#if-something-fails" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -874,8 +978,8 @@
 <p class="admonition-title">Status: prototype, ingest only</p>
 <p>Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
 contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
-OTLP ingest into ClickHouse and the query API. There is no UI, alerting
-or SDK yet. Applies to: <code>dev</code>.</p>
+OTLP ingest into ClickHouse, the query API and the web UI. There is no
+alerting or SDK yet. Applies to: <code>dev</code>.</p>
 </div>
 <p>This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.</p>
@@ -891,14 +995,17 @@ OTLP data reaches ClickHouse.</p>
 <p>The script generates an ingest token and a ClickHouse password. It refuses to
 overwrite an existing <code>.env</code>.</p>
 <h2 id="2-start-the-stack">2. Start the stack</h2>
-<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>compose<span class="w"> </span>--profile<span class="w"> </span>demo<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--build
 docker<span class="w"> </span>compose<span class="w"> </span>ps<span class="w"> </span>--format<span class="w"> </span><span class="s1">'{{.Service}}\t{{.State}}'</span>
 </code></pre></div>
 <p>Expected output, after the images have been pulled:</p>
 <div class="highlight"><pre><span></span><code>api running
 clickhouse  running
 collector   running
+demo    running
 </code></pre></div>
+<p>The <code>demo</code> profile adds a sample workload: three services that send traces,
+logs, events and gauges. Leave the flag out to run without it.</p>
 <h2 id="3-run-the-smoke-test">3. Run the smoke test</h2>
 <div class="highlight"><pre><span></span><code>scripts/smoke.sh
 </code></pre></div>
@@ -910,7 +1017,7 @@ PASS  slow query killed by time limit (Code: 159)
 PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 </code></pre></div>
-<p>There are 33 <code>PASS</code> lines. Any <code>FAIL</code> line names the check and what it got.</p>
+<p>There are 39 <code>PASS</code> lines. Any <code>FAIL</code> line names the check and what it got.</p>
 <p>The test sends one span, two log records (one of them an event) and one gauge
 over OTLP HTTP, reads them back from ClickHouse and through the query API,
 and checks that the API's database user is read-only and limited.</p>
@@ -919,7 +1026,11 @@ and checks that the API's database user is read-only and limited.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://127.0.0.1:4318
 <span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_HEADERS</span><span class="o">=</span><span class="s2">"Authorization=Bearer </span><span class="k">$(</span>grep<span class="w"> </span>TRACEMELT_INGEST_TOKEN<span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="o">=</span><span class="w"> </span>-f2<span class="k">)</span><span class="s2">"</span>
 </code></pre></div>
-<p>There is no UI yet. Read the data back through the query API:</p>
+<h2 id="5-look-at-it">5. Look at it</h2>
+<p>Open <code>http://127.0.0.1:8000/</code>, paste the value of <code>TRACEMELT_API_TOKEN</code> from
+<code>.env</code> and sign in. With the demo workload running, <strong>Overview</strong> lists
+<code>storefront</code>, <code>inventory</code> and <code>payments</code>. See <a href="../../using-tracemelt/ui/">Use the web UI</a>.</p>
+<p>The same data is available from the query API:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>grep<span class="w"> </span>TRACEMELT_API_TOKEN<span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="o">=</span><span class="w"> </span>-f2<span class="k">)</span>
 curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="s2">"http://127.0.0.1:8000/api/services"</span>
 </code></pre></div>
@@ -959,6 +1070,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"
 </code></pre></div>
 <h2 id="related">Related</h2>
 <ul>
+<li><a href="../../using-tracemelt/ui/">Use the web UI</a></li>
 <li><a href="../../api/query-api/">Query API reference</a>: endpoints and guardrails.</li>
 <li><a href="../../reference/configuration/">Configuration reference</a>: ports, environment variables, limits.</li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>

@@ -375,7 +375,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Using tracemelt
   
 
     
@@ -388,6 +388,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using tracemelt
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../using-tracemelt/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -477,10 +559,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -498,8 +580,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -812,6 +894,11 @@ to this repository. Applies to: <code>dev</code>.</p>
 <li><code>scripts/outage-test.sh</code> to test durability across a ClickHouse outage.</li>
 <li>Read-only query API (FastAPI) for services, traces, logs, events and gauge
   metrics, guarded by a bearer token.</li>
+<li>Web UI served by the query API: overview, traces with a span waterfall,
+  logs with a jump to the trace, gauge charts and events.</li>
+<li>Browser sign-in: <code>POST /api/session</code> exchanges the API token for an
+  <code>HttpOnly</code> session cookie. Strict content security policy on every response.</li>
+<li>Demo workload behind <code>docker compose --profile demo</code>.</li>
 <li>ClickHouse user <code>tracemelt_reader</code>: select-only, with time, memory and row
   limits it cannot raise.</li>
 <li><code>scripts/init-env.sh</code> to generate secrets and <code>scripts/smoke.sh</code> to verify

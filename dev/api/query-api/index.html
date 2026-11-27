@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://sunilbittu.github.io/observability-lens/dev/api/query-api/">
       
       
-        <link rel="prev" href="../../getting-started/quickstart/">
+        <link rel="prev" href="../../using-tracemelt/ui/">
       
       
         <link rel="next" href="../../reference/configuration/">
@@ -354,6 +354,88 @@
       
   
   
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using tracemelt
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using tracemelt
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../using-tracemelt/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -367,10 +449,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -388,8 +470,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -470,6 +552,17 @@
     <span class="md-ellipsis">
       
         Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#browser-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser session
       
     </span>
   </a>
@@ -590,10 +683,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -611,8 +704,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -751,6 +844,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#browser-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Browser session
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -835,8 +939,9 @@ to: <code>dev</code>.</p>
 <p>The query API is a read-only HTTP service over the <code>otel_*</code> tables. It listens
 on <code>127.0.0.1:8000</code> by default.</p>
 <h2 id="authentication">Authentication</h2>
-<p>Every endpoint except <code>/api/health</code> requires
-<code>Authorization: Bearer &lt;TRACEMELT_API_TOKEN&gt;</code>. A missing or wrong token returns
+<p>Every endpoint except <code>/api/health</code> and <code>POST /api/session</code> requires
+<code>Authorization: Bearer &lt;TRACEMELT_API_TOKEN&gt;</code> or the session cookie described
+below. A missing or wrong token returns
 <code>401</code>. The ingest token is not accepted.</p>
 <p>This single shared token is a temporary guard. There are no users, roles or
 audit log yet.</p>
@@ -846,6 +951,13 @@ curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span>
 <p>Expected output after the smoke test has run, with your own service names:</p>
 <div class="highlight"><pre><span></span><code>[{"service":"smoke-1795785046-21234","spans":1,"error_spans":0}]
 </code></pre></div>
+<h2 id="browser-session">Browser session</h2>
+<p>The web UI signs in with <code>POST /api/session</code> and a JSON body
+<code>{"token": "&lt;TRACEMELT_API_TOKEN&gt;"}</code>. A correct token returns <code>204</code> and sets
+the cookie <code>tracemelt_session</code> (<code>HttpOnly</code>, <code>SameSite=Strict</code>, 12 hours). The
+cookie value is derived from the token and is not the token. <code>DELETE
+/api/session</code> clears it. <code>GET /api/session</code> returns <code>{"signed_in": true}</code> or
+<code>401</code>.</p>
 <h2 id="endpoints">Endpoints</h2>
 <p>All endpoints are <code>GET</code> and return a JSON array.</p>
 <table>
@@ -870,7 +982,7 @@ curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span>
 <tr>
 <td><code>/api/traces</code></td>
 <td><code>since_minutes</code>, <code>limit</code>, <code>service</code>, <code>errors_only</code></td>
-<td>Recent traces, newest first.</td>
+<td>Recent traces, newest first. <code>service</code> keeps traces with at least one span from that service and still reports the whole trace.</td>
 </tr>
 <tr>
 <td><code>/api/traces/{trace_id}</code></td>

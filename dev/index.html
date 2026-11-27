@@ -453,7 +453,7 @@
   <span class="md-ellipsis">
     
   
-    Reference
+    Using tracemelt
   
 
     
@@ -466,6 +466,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Using tracemelt
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="using-tracemelt/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -553,10 +635,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -574,8 +656,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -758,8 +840,8 @@
 <h1 id="tracemelt">tracemelt</h1>
 <div class="admonition warning">
 <p class="admonition-title">Status: prototype</p>
-<p>OTLP ingest into ClickHouse and a read-only query API exist. There is no
-UI, alert engine or SDK yet. Applies to: <code>dev</code> (no release exists).</p>
+<p>OTLP ingest into ClickHouse, a read-only query API and a web UI exist.
+There is no alert engine or SDK yet. Applies to: <code>dev</code> (no release exists).</p>
 </div>
 <p>tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces (MELT). It is intended to be
@@ -786,8 +868,8 @@ self-hostable and licensed under Apache-2.0.</p>
 <td>prototype, verified 2026-11-27</td>
 </tr>
 <tr>
-<td>Web UI</td>
-<td>planned</td>
+<td>Web UI (overview, traces with waterfall, logs, gauge metrics, events)</td>
+<td>prototype, checked by hand 2026-11-27</td>
 </tr>
 <tr>
 <td>Alert engine</td>
@@ -815,6 +897,7 @@ self-hostable and licensed under Apache-2.0.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="getting-started/quickstart/">Quickstart</a>: start the stack and prove data reaches ClickHouse.</li>
+<li><a href="using-tracemelt/ui/">Use the web UI</a>: sign in and find a failed request.</li>
 <li><a href="api/query-api/">Query API reference</a>: endpoints, limits and guardrails.</li>
 <li><a href="reference/configuration/">Configuration reference</a>: ports, environment variables, limits and known limitations.</li>
 <li><a href="project/roadmap/">Roadmap</a>: phases, their acceptance criteria and current state.</li>
