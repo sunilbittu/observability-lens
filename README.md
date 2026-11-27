@@ -14,7 +14,7 @@ platform for metrics, events, logs and traces. OTLP is the ingest contract.
 
 ```bash
 scripts/init-env.sh
-docker compose up -d
+docker compose up -d --build
 scripts/smoke.sh
 ```
 

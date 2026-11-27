@@ -27,3 +27,4 @@ nav:
   - Project:
       - Roadmap: project/roadmap.md
       - Changelog: project/changelog.md
+      - "ADR 0001: schema-init job": project/adr/0001-schema-init-job.md

@@ -40,8 +40,9 @@ exporters:
     database: ${env:TRACEMELT_CLICKHOUSE_DB}
     username: ${env:TRACEMELT_CLICKHOUSE_USER}
     password: ${env:TRACEMELT_CLICKHOUSE_PASSWORD}
-    create_schema: true
-    ttl: ${env:TRACEMELT_RETENTION}
+    # The schema-init job creates the tables. With this off, the collector can
+    # start, accept data and queue it while ClickHouse is down.
+    create_schema: false
     timeout: 10s
     sending_queue:
       enabled: true

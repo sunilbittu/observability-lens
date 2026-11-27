@@ -32,7 +32,7 @@ overwrite an existing `.env`.
 ## 2. Start the stack
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose ps --format '{{.Service}}\t{{.State}}'
 ```
 
@@ -93,7 +93,7 @@ docker compose exec clickhouse sh -c 'clickhouse-client --user "$CLICKHOUSE_USER
 | `required variable ... is missing a value: run scripts/init-env.sh` | No `.env`. Run step 1. |
 | `port is already allocated` | Another process holds an OTLP port. Change the `TRACEMELT_*_PORT` values in `.env`. |
 | Smoke test fails at `collector health` | The collector is still starting or is restarting. Check `docker compose logs collector`. |
-| Collector restarts in a loop with `create database` errors | ClickHouse is not reachable. See [known limitations](../reference/configuration.md#known-limitations). |
+| `schema-init` exits with an error | ClickHouse was not reachable when the tables were being created. Check `docker compose logs schema-init clickhouse`, then run `docker compose up -d` again. |
 
 ## Stop and clean up
 

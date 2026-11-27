@@ -32,6 +32,20 @@ services:
     volumes:
       - collector-queue:/var/lib/otelcol/queue
 
+  # Runs the exporter's own DDL once per `up`, then exits. Keeps the schema
+  # exporter-owned while letting the long-running collector start without ClickHouse.
+  schema-init:
+    build: ./deploy/collector/schema-init
+    image: tracemelt/schema-init:0.166.0
+    environment:
+      TRACEMELT_CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
+      TRACEMELT_CLICKHOUSE_USER: ${TRACEMELT_CLICKHOUSE_USER:?run scripts/init-env.sh}
+      TRACEMELT_CLICKHOUSE_PASSWORD: ${TRACEMELT_CLICKHOUSE_PASSWORD:?run scripts/init-env.sh}
+      TRACEMELT_RETENTION: ${TRACEMELT_RETENTION:-72h}
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
   collector:
     image: otel/opentelemetry-collector-contrib:0.166.0
     command: ["--config=/etc/otelcol/config.yaml"]
@@ -40,7 +54,6 @@ services:
       TRACEMELT_CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
       TRACEMELT_CLICKHOUSE_USER: ${TRACEMELT_CLICKHOUSE_USER:?run scripts/init-env.sh}
       TRACEMELT_CLICKHOUSE_PASSWORD: ${TRACEMELT_CLICKHOUSE_PASSWORD:?run scripts/init-env.sh}
-      TRACEMELT_RETENTION: ${TRACEMELT_RETENTION:-72h}
       GOMEMLIMIT: 400MiB
     mem_limit: 512m
     volumes:
@@ -55,6 +68,8 @@ services:
       clickhouse:
         condition: service_healthy
       collector-queue-init:
+        condition: service_completed_successfully
+      schema-init:
         condition: service_completed_successfully
     restart: unless-stopped
 

@@ -39,7 +39,9 @@ created. Editing them in `.env` afterwards does not change the database.
 ## Tables
 
 The collector's `clickhouseexporter` creates and owns every table. tracemelt
-does not define telemetry schema.
+does not define telemetry schema. The DDL runs in the one-shot `schema-init`
+job on every `docker compose up`, see
+[ADR 0001](../project/adr/0001-schema-init-job.md).
 
 `otel_logs`, `otel_traces`, `otel_traces_trace_id_ts`,
 `otel_traces_trace_id_ts_mv`, `otel_metrics_gauge`, `otel_metrics_sum`,
@@ -60,18 +62,17 @@ and `LogAttributes['event.name']` set.
 
 ## Durability, as tested
 
-On 2026-11-27 ClickHouse was stopped for 86 seconds. 20 log records sent
-during the outage were accepted, the collector was restarted while ClickHouse
-was still down, and all 20 records were in ClickHouse 33 seconds after it came
-back. A 5 minute outage has not been tested.
+On 2026-11-27 `scripts/outage-test.sh 300` passed: ClickHouse was stopped for
+300 seconds, 20 log records were sent, the collector was restarted while
+ClickHouse was still down, 20 more records were sent, and all 40 were in
+ClickHouse 26 seconds after it came back, with no duplicates.
 
 ## Known limitations
 
-- **Collector cannot start while ClickHouse is down.** The exporter creates
-  its schema at startup, so a collector that restarts during a ClickHouse
-  outage exits and is restarted by Docker until ClickHouse returns. During
-  that time OTLP requests are refused. Data already in the on-disk queue is
-  kept.
+- **A collector started during a ClickHouse outage leaves `EventName` empty.**
+  It cannot inspect the table columns at startup, so the optional `EventName`
+  column in `otel_logs` stays empty until the collector is restarted with
+  ClickHouse up. See [ADR 0001](../project/adr/0001-schema-init-job.md).
 - **Up to 5 seconds of data sits in memory.** The batch processor holds data
   before it reaches the on-disk queue. A collector crash loses that window.
 - **Outages longer than 10 minutes drop data.** Retries are bounded on

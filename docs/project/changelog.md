@@ -14,6 +14,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   writing to ClickHouse 26.8.48.11.
 - OTLP ingest requires a bearer token. Requests without it get HTTP 401.
 - On-disk collector export queue with bounded retries.
+- One-shot `schema-init` job creates the exporter's tables, so the collector
+  can start and queue data while ClickHouse is down.
+- `scripts/outage-test.sh` to test durability across a ClickHouse outage.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify
   ingest end to end.
 - Configuration reference page.

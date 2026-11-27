@@ -7,6 +7,7 @@ on:
       - "deploy/**"
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
+      - "scripts/outage-test.sh"
       - ".github/workflows/ingest-smoke.yml"
   push:
     branches: [main]
@@ -15,6 +16,7 @@ on:
       - "deploy/**"
       - "scripts/init-env.sh"
       - "scripts/smoke.sh"
+      - "scripts/outage-test.sh"
 
 jobs:
   smoke:
@@ -27,7 +29,7 @@ jobs:
         run: scripts/init-env.sh
 
       - name: Start stack
-        run: docker compose up -d
+        run: docker compose up -d --build
 
       - name: Wait for collector
         run: |
@@ -40,6 +42,9 @@ jobs:
 
       - name: Smoke test
         run: scripts/smoke.sh
+
+      - name: Outage test (60 second outage)
+        run: scripts/outage-test.sh 60
 
       - name: Logs on failure
         if: failure()

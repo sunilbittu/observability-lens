@@ -34,8 +34,8 @@ command has a recorded expected output.
 ## Phase 1: harden single-node
 
 State: started. Done so far: secrets from the environment, token
-authenticated OTLP ingest, a persistent collector queue (tested with an 86
-second outage), ClickHouse with no published ports.
+authenticated OTLP ingest, a persistent collector queue (tested with a 300
+second outage and a collector restart), ClickHouse with no published ports.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
