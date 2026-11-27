@@ -1,7 +1,7 @@
 # tracemelt
 
-**Status: prototype.** Only OTLP ingest into ClickHouse exists. There is no
-query API, UI, alert engine or SDK yet.
+**Status: prototype.** OTLP ingest into ClickHouse and a read-only query API
+exist. There is no UI, alert engine or SDK yet.
 
 tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces. OTLP is the ingest contract.

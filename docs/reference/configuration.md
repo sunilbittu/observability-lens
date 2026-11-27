@@ -11,6 +11,7 @@
 | 4317 | collector | `TRACEMELT_BIND`, default `127.0.0.1` | OTLP gRPC, bearer token required |
 | 4318 | collector | `TRACEMELT_BIND`, default `127.0.0.1` | OTLP HTTP, bearer token required |
 | 13133 | collector | `127.0.0.1` only | Health check, no authentication |
+| 8000 | api | `127.0.0.1` only | [Query API](../api/query-api.md), bearer token required except `/api/health` |
 | 8123, 9000 | ClickHouse | not published | Reachable only on the Compose network |
 
 The stack has no TLS. Keep `TRACEMELT_BIND` on loopback unless a TLS
@@ -26,12 +27,15 @@ ignored by git.
 | `TRACEMELT_INGEST_TOKEN` | generated | Bearer token every OTLP request must carry. One shared token for all senders. |
 | `TRACEMELT_CLICKHOUSE_USER` | `tracemelt` | ClickHouse user, created on first start. |
 | `TRACEMELT_CLICKHOUSE_PASSWORD` | generated | Password for that user. |
+| `TRACEMELT_CLICKHOUSE_READER_PASSWORD` | generated | Password of the read-only ClickHouse user `tracemelt_reader` that the query API uses. Can be changed later; restart `clickhouse` and `api`. |
+| `TRACEMELT_API_TOKEN` | generated | Bearer token for the query API. Different from the ingest token. |
 | `TRACEMELT_CLICKHOUSE_DB` | `otel` | Database that holds the `otel_*` tables. |
 | `TRACEMELT_RETENTION` | `72h` | TTL for all signals. Applied when tables are created; changing it later does not alter existing tables. |
 | `TRACEMELT_BIND` | `127.0.0.1` | Host address for the OTLP ports. |
 | `TRACEMELT_OTLP_GRPC_PORT` | `4317` | Host port for OTLP gRPC. |
 | `TRACEMELT_OTLP_HTTP_PORT` | `4318` | Host port for OTLP HTTP. |
 | `TRACEMELT_COLLECTOR_HEALTH_PORT` | `13133` | Host port for the collector health check. |
+| `TRACEMELT_API_PORT` | `8000` | Host port for the query API. |
 
 The ClickHouse user and password are set only when the data volume is first
 created. Editing them in `.env` afterwards does not change the database.
@@ -83,4 +87,5 @@ ClickHouse 26 seconds after it came back, with no duplicates.
 ## Related
 
 - [Quickstart](../getting-started/quickstart.md)
+- [Query API reference](../api/query-api.md)
 - [Roadmap](../project/roadmap.md)
