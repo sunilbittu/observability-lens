@@ -32,6 +32,7 @@ shows "That token was not accepted."
 | Logs | Log records, with a text search on the message and a service filter. **Open trace** jumps to the trace a record belongs to. |
 | Metrics | Gauge metrics, charted as the average per service. Hover, or focus the chart and use the arrow keys, to read values; or switch to a table. Lines break where data is missing. |
 | Events | Log records tagged as events, with their attributes. |
+| Alerts | What the alert engine recorded: each firing and the outcome of its webhook. Read-only. |
 
 The time range (15m, 1h, 6h, 24h) applies to every view. List views refresh
 every 10 seconds while the tab is visible.
@@ -54,7 +55,8 @@ minutes out of every 12, so failed `POST /checkout` traces appear regularly.
   and restarting the API ends every session.
 - Over plain HTTP the cookie is not marked `Secure`. Set
   `TRACEMELT_COOKIE_SECURE=1` when serving the UI over HTTPS.
-- No Alerts, Dashboards or Infrastructure views. Sum metrics and histograms
+- Alerts are read-only: rules are edited in a file, see [Alert rules](../alerting/rules.md).
+- No Dashboards or Infrastructure views. Sum metrics and histograms
   are listed but cannot be charted.
 - Lists show the newest 100 traces or 200 records, with no paging.
 - Times are shown in the browser's time zone.

@@ -1,0 +1,63 @@
+# tracemelt alert rules. Status: prototype.
+# Edit this file, then restart the alerts service: docker compose restart alerts
+# Reference and limitations: docs/alerting/rules.md
+#
+# The rules below match the demo workload (docker compose --profile demo) and send to its
+# webhook receiver. Replace them with your own.
+
+[[rule]]
+name = "payments-failed-spans"
+signal = "error_spans"
+service = "payments"
+comparator = ">"
+threshold = 5
+window_seconds = 60
+cooldown_seconds = 300
+webhook_url = "http://webhook-sink:8080/alerts"
+
+[[rule]]
+name = "checkout-failure-logs"
+signal = "log_count"
+service = "storefront"
+search = "checkout failed"
+severity = "ERROR"
+comparator = ">"
+threshold = 5
+window_seconds = 60
+cooldown_seconds = 300
+webhook_url = "http://webhook-sink:8080/alerts"
+
+# metric_avg averages every data point in the window. Always set service: without it the
+# average runs across the whole fleet and one overloaded service is hidden by the others.
+[[rule]]
+name = "payments-queue-depth"
+signal = "metric_avg"
+metric = "queue.depth"
+service = "payments"
+comparator = ">"
+threshold = 20
+window_seconds = 60
+cooldown_seconds = 300
+webhook_url = "http://webhook-sink:8080/alerts"
+
+# Used by scripts/smoke.sh to prove a rule fires and its webhook is delivered.
+[[rule]]
+name = "smoke-delivered"
+signal = "log_count"
+search = "tracemelt-smoke-alert"
+comparator = ">"
+threshold = 0
+window_seconds = 60
+cooldown_seconds = 0
+webhook_url = "http://webhook-sink:8080/alerts"
+
+# Used by scripts/smoke.sh to prove the cloud metadata address is refused.
+[[rule]]
+name = "smoke-blocked"
+signal = "log_count"
+search = "tracemelt-smoke-alert"
+comparator = ">"
+threshold = 0
+window_seconds = 60
+cooldown_seconds = 0
+webhook_url = "http://169.254.169.254/latest/meta-data/"

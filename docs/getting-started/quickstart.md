@@ -3,8 +3,8 @@
 !!! warning "Status: prototype, ingest only"
     Verified on 2026-11-27 with Docker 29.5.3, Compose v5.1.4, collector
     contrib 0.166.0 and ClickHouse 26.8.48.11 on macOS (arm64). This covers
-    OTLP ingest into ClickHouse, the query API and the web UI. There is no
-    alerting or SDK yet. Applies to: `dev`.
+    OTLP ingest into ClickHouse, the query API, the web UI and alerting.
+    There is no SDK yet. Applies to: `dev`.
 
 This tutorial starts the single-node stack and proves that authenticated
 OTLP data reaches ClickHouse.
@@ -39,14 +39,17 @@ docker compose ps --format '{{.Service}}\t{{.State}}'
 Expected output, after the images have been pulled:
 
 ```text
+alerts	running
 api	running
 clickhouse	running
 collector	running
 demo	running
+webhook-sink	running
 ```
 
-The `demo` profile adds a sample workload: three services that send traces,
-logs, events and gauges. Leave the flag out to run without it.
+The `demo` profile adds a sample workload (three services that send traces,
+logs, events and gauges) and a receiver for alert webhooks. Leave the flag
+out to run without them.
 
 ## 3. Run the smoke test
 
@@ -65,11 +68,14 @@ PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 ```
 
-There are 39 `PASS` lines. Any `FAIL` line names the check and what it got.
+There are 49 `PASS` lines. The alerting checks wait for the next evaluation
+pass, so the test takes up to a minute. Any `FAIL` line names the check and what it got.
 
 The test sends one span, two log records (one of them an event) and one gauge
 over OTLP HTTP, reads them back from ClickHouse and through the query API,
-and checks that the API's database user is read-only and limited.
+checks that the API's database user is read-only and limited, and checks that
+an alert rule fires, its webhook is delivered and a webhook to the cloud
+metadata address is blocked.
 
 ## 4. Send your own telemetry
 
@@ -99,12 +105,31 @@ Expected output, with your own service names:
 [{"service":"smoke-1795785046-21234","spans":1,"error_spans":0}]
 ```
 
+## 6. See an alert
+
+The demo payments service fails for 3 minutes out of every 12. When it does,
+the shipped rules fire and the receiver prints what it was sent:
+
+```bash
+docker compose logs webhook-sink
+```
+
+Expected output within 12 minutes of starting the demo:
+
+```text
+webhook-sink-1  | alert 1: payments-failed-spans: failed spans for payments is 40, which is > 5 over 60s
+```
+
+The same firings are listed under **Alerts** in the UI. See
+[Alert rules and limitations](../alerting/rules.md) to write your own.
+
 ## If something fails
 
 | Symptom | Cause and fix |
 |---|---|
 | `required variable ... is missing a value: run scripts/init-env.sh` | No `.env`. Run step 1. |
 | `port is already allocated` | Another process holds an OTLP port. Change the `TRACEMELT_*_PORT` values in `.env`. |
+| `alerts` keeps restarting | The rules file is invalid. `docker compose logs alerts` names the rule and the reason. |
 | Smoke test fails at `collector health` | The collector is still starting or is restarting. Check `docker compose logs collector`. |
 | `schema-init` exits with an error | ClickHouse was not reachable when the tables were being created. Check `docker compose logs schema-init clickhouse`, then run `docker compose up -d` again. |
 
@@ -118,6 +143,7 @@ docker compose down -v     # deletes stored telemetry and the collector queue
 ## Related
 
 - [Use the web UI](../using-tracemelt/ui.md)
+- [Alert rules and limitations](../alerting/rules.md)
 - [Query API reference](../api/query-api.md): endpoints and guardrails.
 - [Configuration reference](../reference/configuration.md): ports, environment variables, limits.
 - [Roadmap](../project/roadmap.md)

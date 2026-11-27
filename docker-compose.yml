@@ -13,10 +13,14 @@ services:
       # Read by deploy/clickhouse/reader.xml for the query API's read-only user.
       TRACEMELT_CLICKHOUSE_READER_PASSWORD: ${TRACEMELT_CLICKHOUSE_READER_PASSWORD:?run scripts/init-env.sh}
       TRACEMELT_CLICKHOUSE_READER_GRANT: GRANT SELECT ON ${TRACEMELT_CLICKHOUSE_DB:-otel}.*
+      # Read by deploy/clickhouse/alert.xml for the alert engine's user.
+      TRACEMELT_CLICKHOUSE_ALERT_PASSWORD: ${TRACEMELT_CLICKHOUSE_ALERT_PASSWORD:?run scripts/init-env.sh}
+      TRACEMELT_CLICKHOUSE_ALERT_GRANT: GRANT INSERT, CREATE TABLE ON ${TRACEMELT_CLICKHOUSE_DB:-otel}.alert_events
     # No published ports: ClickHouse is reachable only on the compose network.
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - ./deploy/clickhouse/reader.xml:/etc/clickhouse-server/users.d/tracemelt-reader.xml:ro
+      - ./deploy/clickhouse/alert.xml:/etc/clickhouse-server/users.d/tracemelt-alert.xml:ro
     ulimits:
       nofile:
         soft: 262144
@@ -103,6 +107,33 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # Evaluates deploy/alerts/rules.toml. Run exactly one: instances do not coordinate yet.
+  alerts:
+    build: ./api
+    image: tracemelt/api:dev
+    command: ["python", "-m", "app.alerts"]
+    environment:
+      TRACEMELT_CLICKHOUSE_HOST: clickhouse
+      TRACEMELT_CLICKHOUSE_DB: ${TRACEMELT_CLICKHOUSE_DB:-otel}
+      TRACEMELT_CLICKHOUSE_ALERT_USER: tracemelt_alert
+      TRACEMELT_CLICKHOUSE_ALERT_PASSWORD: ${TRACEMELT_CLICKHOUSE_ALERT_PASSWORD:?run scripts/init-env.sh}
+      TRACEMELT_ALERT_RULES: /etc/tracemelt/rules.toml
+      TRACEMELT_ALERT_INTERVAL_SECONDS: ${TRACEMELT_ALERT_INTERVAL_SECONDS:-30}
+      # Webhooks go only to these hosts. The second list names hosts that may resolve
+      # to private addresses; every other host must resolve to public addresses.
+      TRACEMELT_WEBHOOK_ALLOWED_HOSTS: ${TRACEMELT_WEBHOOK_ALLOWED_HOSTS:-webhook-sink}
+      TRACEMELT_WEBHOOK_PRIVATE_HOSTS: ${TRACEMELT_WEBHOOK_PRIVATE_HOSTS:-webhook-sink}
+    volumes:
+      - ./deploy/alerts/rules.toml:/etc/tracemelt/rules.toml:ro
+    mem_limit: 128m
+    read_only: true
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+      schema-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
   # Optional sample workload: docker compose --profile demo up -d
   demo:
     profiles: [demo]
@@ -118,6 +149,18 @@ services:
     mem_limit: 64m
     depends_on:
       - collector
+    restart: unless-stopped
+
+  # Receives the demo alert webhooks and prints them. Not published to the host.
+  webhook-sink:
+    profiles: [demo]
+    image: python:3.12.16-slim-bookworm
+    command: ["python", "-u", "/demo/webhook_sink.py"]
+    volumes:
+      - ./demo/webhook_sink.py:/demo/webhook_sink.py:ro
+    user: "10001:10001"
+    read_only: true
+    mem_limit: 64m
     restart: unless-stopped
 
 volumes:

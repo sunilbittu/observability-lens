@@ -1,0 +1,27 @@
+<!-- User for the alert engine. It reads telemetry and owns one table, alert_events.
+     It cannot write to, alter or drop the otel_* tables. -->
+<clickhouse>
+  <profiles>
+    <tracemelt_alert>
+      <max_execution_time>10</max_execution_time>
+      <max_memory_usage>1000000000</max_memory_usage>
+      <max_result_rows>10000</max_result_rows>
+      <result_overflow_mode>throw</result_overflow_mode>
+      <max_concurrent_queries_for_user>4</max_concurrent_queries_for_user>
+    </tracemelt_alert>
+  </profiles>
+  <users>
+    <tracemelt_alert>
+      <password from_env="TRACEMELT_CLICKHOUSE_ALERT_PASSWORD"/>
+      <profile>tracemelt_alert</profile>
+      <quota>default</quota>
+      <networks>
+        <ip>::/0</ip>
+      </networks>
+      <grants>
+        <query from_env="TRACEMELT_CLICKHOUSE_READER_GRANT"/>
+        <query from_env="TRACEMELT_CLICKHOUSE_ALERT_GRANT"/>
+      </grants>
+    </tracemelt_alert>
+  </users>
+</clickhouse>

@@ -245,6 +245,30 @@ def events(since_minutes: Since = 60, limit: Limit = 100, service: Service = Non
     return _logs(True, since_minutes, limit, service, None, None, name)
 
 
+@api.get("/alerts")
+def alert_events(since_minutes: Since = 1440, limit: Limit = 200,
+                 rule: Annotated[str | None, Query(max_length=64)] = None) -> list[dict[str, Any]]:
+    """What the alert engine recorded: one 'fired' row per firing, then one 'delivery' row per webhook attempt."""
+    try:
+        return run(
+            """
+            SELECT Timestamp AS timestamp, Kind AS kind, RuleName AS rule, Signal AS signal,
+                   Value AS value, Comparator AS comparator, Threshold AS threshold,
+                   WindowSeconds AS window_seconds, Outcome AS outcome, Detail AS detail
+            FROM alert_events
+            WHERE Timestamp >= now() - toIntervalMinute({since:UInt32})
+              AND ({rule:String} = '' OR RuleName = {rule:String})
+            ORDER BY Timestamp DESC LIMIT {limit:UInt32}
+            """,
+            {"since": since_minutes, "rule": rule or "", "limit": limit},
+        )
+    except HTTPException as exc:
+        # The table is created by the alert engine on its first pass. Before that there is nothing to list.
+        if exc.status_code == 502 and "Code: 60" in str(exc.__cause__):
+            return []
+        raise
+
+
 @api.get("/metrics")
 def metrics(since_minutes: Since = 60) -> list[dict[str, Any]]:
     """Metric names seen recently. Only gauges can be charted so far."""

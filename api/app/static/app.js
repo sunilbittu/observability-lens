@@ -508,6 +508,37 @@ function events(params) {
   });
 }
 
+// ---------- alerts ----------
+
+function alerts() {
+  const sub = h("p", { class: "sub" });
+  const body = h("div");
+  fill(view, h("h1", { class: "lede wide" }, "Alerts"), sub, body);
+  const what = { delivered: "Webhook delivered", failed: "Webhook failed", blocked: "Webhook blocked" };
+
+  let touch = null;
+  live(async (first, current) => {
+    const rows = await api(`/alerts?${qs({ since_minutes: range, limit: 200 })}`);
+    if (!current()) return;
+    const fired = rows.filter((r) => r.kind === "fired").length;
+    fill(sub, rows.length ? `${plural(fired, "firing")} in the last ${rangeWords()}. Rules are edited in deploy/alerts/rules.toml.` : "");
+    if (rows.length) touch = freshness(sub);
+    fill(body, rows.length ? h("div", { class: "scroll" }, h("table", { class: "table" },
+      h("thead", {}, h("tr", {}, h("th", {}, "Time"), h("th", {}, "Rule"), h("th", {}, "What happened"), h("th", {}, "Detail"))),
+      h("tbody", {}, rows.map((r) => {
+        const bad = r.outcome === "failed" || r.outcome === "blocked";
+        return h("tr", {},
+          h("td", { class: "mono dim" }, dayClock(r.timestamp)),
+          h("td", { class: "mono" }, r.rule),
+          h("td", {}, r.kind === "fired" ? h("span", { class: "failed" }, mark("fail"), "Fired")
+            : bad ? h("span", { class: "sev WARN" }, mark("warn"), what[r.outcome]) : h("span", { class: "dim" }, what[r.outcome] || r.outcome)),
+          h("td", { class: "body" }, r.kind === "fired" ? r.detail.replace(`${r.rule}: `, "") : r.detail));
+      }))))
+      : empty(`No alerts fired in the last ${rangeWords()}.`));
+    if (!first && touch) touch();
+  });
+}
+
 // ---------- metrics ----------
 
 function niceTicks(lo, hi, n = 4) {
@@ -722,6 +753,7 @@ function route() {
   else if (name === "logs") logs(params);
   else if (name === "metrics") metrics(params);
   else if (name === "events") events(params);
+  else if (name === "alerts") alerts();
   else overview();
 }
 

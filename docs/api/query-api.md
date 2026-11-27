@@ -50,6 +50,7 @@ All endpoints are `GET` and return a JSON array.
 | `/api/traces/{trace_id}` | none | Every span of one trace, up to 5000. `404` if unknown. |
 | `/api/logs` | `since_minutes`, `limit`, `service`, `q`, `trace_id` | Log records, newest first. `q` is a case-insensitive substring match on the body. |
 | `/api/events` | `since_minutes`, `limit`, `service`, `name` | Log records tagged `tracemelt.event = "true"`. |
+| `/api/alerts` | `since_minutes` (default 1440), `limit`, `rule` | Alert firings and webhook outcomes, newest first. See [what is recorded](../alerting/rules.md#what-is-recorded). |
 | `/api/metrics` | `since_minutes` | Gauge and sum metric names. `chartable` is `1` for gauges only. |
 | `/api/metrics/gauge` | `name` (required), `since_minutes`, `step_seconds`, `service` | Per-service `avg`, `min` and `max` of a gauge per time bucket. |
 
