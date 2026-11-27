@@ -1,0 +1,46 @@
+name: ingest-smoke
+
+on:
+  pull_request:
+    paths:
+      - "docker-compose.yml"
+      - "deploy/**"
+      - "scripts/init-env.sh"
+      - "scripts/smoke.sh"
+      - ".github/workflows/ingest-smoke.yml"
+  push:
+    branches: [main]
+    paths:
+      - "docker-compose.yml"
+      - "deploy/**"
+      - "scripts/init-env.sh"
+      - "scripts/smoke.sh"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate secrets
+        run: scripts/init-env.sh
+
+      - name: Start stack
+        run: docker compose up -d
+
+      - name: Wait for collector
+        run: |
+          for i in $(seq 1 30); do
+            [ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:13133)" = 200 ] && exit 0
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+
+      - name: Smoke test
+        run: scripts/smoke.sh
+
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs

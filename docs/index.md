@@ -1,9 +1,8 @@
 # tracemelt
 
-!!! warning "Status: planned"
-    tracemelt is at the design stage. This repository contains documentation
-    tooling only. There is no collector config, query API, UI, alert engine or
-    SDK to install yet. Applies to: `dev` (no release exists).
+!!! warning "Status: prototype"
+    Only OTLP ingest into ClickHouse exists. There is no query API, UI, alert
+    engine or SDK yet. Applies to: `dev` (no release exists).
 
 tracemelt is a planned open-source, OpenTelemetry-native observability
 platform for metrics, events, logs and traces (MELT). It is intended to be
@@ -14,7 +13,7 @@ self-hostable and licensed under Apache-2.0.
 | Component | Status |
 |---|---|
 | Documentation site (MkDocs Material, mike, GitHub Pages) | prototype |
-| OTLP ingest (OpenTelemetry Collector to ClickHouse) | planned |
+| OTLP ingest (OpenTelemetry Collector to ClickHouse), token authenticated | prototype, verified 2026-11-27 |
 | Query API | planned |
 | Web UI | planned |
 | Alert engine | planned |
@@ -25,7 +24,7 @@ self-hostable and licensed under Apache-2.0.
 
 ## Intended design
 
-These are design decisions, not working features:
+The first two items are implemented in the prototype. The rest are design decisions:
 
 - OTLP is the only ingest contract. No proprietary telemetry protocol.
 - The OpenTelemetry Collector (contrib) receives OTLP on gRPC `4317` and HTTP `4318`.
@@ -34,6 +33,7 @@ These are design decisions, not working features:
 
 ## Where to go next
 
-- [Quickstart](getting-started/quickstart.md): what the first-run flow will be, and why it cannot be run yet.
+- [Quickstart](getting-started/quickstart.md): start the stack and prove data reaches ClickHouse.
+- [Configuration reference](reference/configuration.md): ports, environment variables, limits and known limitations.
 - [Roadmap](project/roadmap.md): phases, their acceptance criteria and current state.
 - [Changelog](project/changelog.md): what has changed in this repository.

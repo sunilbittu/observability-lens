@@ -1,0 +1,70 @@
+# tracemelt collector. Status: prototype.
+# OTLP in (bearer token required) -> ClickHouse. The clickhouse exporter owns the otel_* tables.
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  bearertokenauth:
+    scheme: Bearer
+    token: ${env:TRACEMELT_INGEST_TOKEN}
+  file_storage:
+    directory: /var/lib/otelcol/queue
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+        max_recv_msg_size_mib: 4
+        auth:
+          authenticator: bearertokenauth
+      http:
+        endpoint: 0.0.0.0:4318
+        max_request_body_size: 4194304
+        auth:
+          authenticator: bearertokenauth
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+  batch:
+    timeout: 5s
+    send_batch_size: 5000
+    send_batch_max_size: 10000
+
+exporters:
+  clickhouse:
+    endpoint: tcp://clickhouse:9000
+    database: ${env:TRACEMELT_CLICKHOUSE_DB}
+    username: ${env:TRACEMELT_CLICKHOUSE_USER}
+    password: ${env:TRACEMELT_CLICKHOUSE_PASSWORD}
+    create_schema: true
+    ttl: ${env:TRACEMELT_RETENTION}
+    timeout: 10s
+    sending_queue:
+      enabled: true
+      storage: file_storage
+      queue_size: 5000
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 600s
+
+service:
+  extensions: [health_check, bearertokenauth, file_storage]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse]
