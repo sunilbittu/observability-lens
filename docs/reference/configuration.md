@@ -32,6 +32,7 @@ ignored by git.
 | `TRACEMELT_ALERT_INTERVAL_SECONDS` | `30` | Seconds between evaluation passes, minimum 5. Not written by `init-env.sh`. |
 | `TRACEMELT_WEBHOOK_ALLOWED_HOSTS` | `webhook-sink` | Hosts alert webhooks may be sent to. See [webhooks](../alerting/rules.md#where-webhooks-may-go). Not written by `init-env.sh`. |
 | `TRACEMELT_WEBHOOK_PRIVATE_HOSTS` | `webhook-sink` | Allowed hosts that may resolve to private addresses. Not written by `init-env.sh`. |
+| `TRACEMELT_BACKUP_PASSWORD` | generated | Password for backup archives. Letters and digits only. See [back up and restore](../operations/backup-and-restore.md). |
 | `TRACEMELT_API_TOKEN` | generated | Bearer token for the query API. Different from the ingest token. |
 | `TRACEMELT_CLICKHOUSE_DB` | `otel` | Database that holds the `otel_*` tables. |
 | `TRACEMELT_RETENTION` | `72h` | TTL for all signals. Applied when tables are created; changing it later does not alter existing tables. |
@@ -90,12 +91,16 @@ ClickHouse 26 seconds after it came back, with no duplicates.
 - **Outages longer than 10 minutes drop data.** Retries are bounded on
   purpose. Nothing alerts on queue size yet.
 - **Alerting is basic.** See [alert limitations](../alerting/rules.md#limitations).
-- **One shared ingest token.** No per-service credentials, no rate limits.
-- **No TLS**, no self-metrics pipeline, no backups, no PII redaction.
+- **One shared ingest token.** No per-service credentials.
+- **Redaction is a safety net**, see [what is masked](../operations/self-observability.md#what-is-masked-by-default).
+- **Backups are manual**, see [back up and restore](../operations/backup-and-restore.md#limitations).
+- **No TLS** and no rate limits.
 
 ## Related
 
 - [Quickstart](../getting-started/quickstart.md)
 - [Query API reference](../api/query-api.md)
+- [Self-observability and data handling](../operations/self-observability.md)
+- [Back up and restore](../operations/backup-and-restore.md)
 - [Alert rules and limitations](../alerting/rules.md)
 - [Roadmap](../project/roadmap.md)

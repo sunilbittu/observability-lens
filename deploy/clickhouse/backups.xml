@@ -1,0 +1,7 @@
+<!-- Lets BACKUP and RESTORE use one directory inside the data volume. scripts/backup.sh
+     copies each archive out to the host straight away and removes it from here. -->
+<clickhouse>
+  <backups>
+    <allowed_path>/var/lib/clickhouse/backups/</allowed_path>
+  </backups>
+</clickhouse>

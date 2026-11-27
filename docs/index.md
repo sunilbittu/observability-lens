@@ -36,6 +36,8 @@ The first two items are implemented in the prototype. The rest are design decisi
 - [Quickstart](getting-started/quickstart.md): start the stack and prove data reaches ClickHouse.
 - [Use the web UI](using-tracemelt/ui.md): sign in and find a failed request.
 - [Alert rules and limitations](alerting/rules.md)
+- [Self-observability and data handling](operations/self-observability.md): what tracemelt reports about itself and what it masks.
+- [Back up and restore](operations/backup-and-restore.md)
 - [Query API reference](api/query-api.md): endpoints, limits and guardrails.
 - [Configuration reference](reference/configuration.md): ports, environment variables, limits and known limitations.
 - [Roadmap](project/roadmap.md): phases, their acceptance criteria and current state.

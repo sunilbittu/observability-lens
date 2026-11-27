@@ -42,7 +42,13 @@ State: started. Done so far: secrets from the environment, token
 authenticated OTLP ingest, a persistent collector queue (tested with a 300
 second outage and a collector restart), ClickHouse with no published ports,
 query guardrails on a read-only ClickHouse user, a token guard on the API,
-a webhook allowlist with SSRF protection.
+a webhook allowlist with SSRF protection,
+collector and ClickHouse self-metrics with alert rules, default redaction,
+backup with a tested restore into a scratch database.
+
+Not done: TLS, rate limits, per-service ingest credentials, OIDC for the UI,
+an alert for a full ClickHouse outage, a disk alert as a percentage, the SDKs
+and their fail-open tests.
 
 Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,

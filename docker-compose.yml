@@ -21,6 +21,8 @@ services:
       - clickhouse-data:/var/lib/clickhouse
       - ./deploy/clickhouse/reader.xml:/etc/clickhouse-server/users.d/tracemelt-reader.xml:ro
       - ./deploy/clickhouse/alert.xml:/etc/clickhouse-server/users.d/tracemelt-alert.xml:ro
+      - ./deploy/clickhouse/metrics.xml:/etc/clickhouse-server/config.d/tracemelt-metrics.xml:ro
+      - ./deploy/clickhouse/backups.xml:/etc/clickhouse-server/config.d/tracemelt-backups.xml:ro
     ulimits:
       nofile:
         soft: 262144

@@ -68,12 +68,13 @@ PASS  large result killed by row limit (Code: 396)
 smoke: all checks passed
 ```
 
-There are 49 `PASS` lines. The alerting checks wait for the next evaluation
-pass, so the test takes up to a minute. Any `FAIL` line names the check and what it got.
+There are 60 `PASS` lines. Some checks wait for the next metrics scrape or
+alert evaluation, so the test takes up to two minutes. Any `FAIL` line names the check and what it got.
 
 The test sends one span, two log records (one of them an event) and one gauge
 over OTLP HTTP, reads them back from ClickHouse and through the query API,
-checks that the API's database user is read-only and limited, and checks that
+checks that the API's database user is read-only and limited, that secrets
+are masked and that the stack reports its own metrics, and checks that
 an alert rule fires, its webhook is delivered and a webhook to the cloud
 metadata address is blocked.
 

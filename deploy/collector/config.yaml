@@ -24,6 +24,25 @@ receivers:
         auth:
           authenticator: bearertokenauth
 
+  # The platform watching itself: the collector's own metrics and a short list of
+  # ClickHouse metrics. These receivers are internal and take nothing from the network.
+  prometheus/self:
+    config:
+      scrape_configs:
+        - job_name: tracemelt-collector
+          scrape_interval: 30s
+          static_configs:
+            - targets: ["127.0.0.1:8888"]
+        - job_name: tracemelt-clickhouse
+          scrape_interval: 30s
+          static_configs:
+            - targets: ["clickhouse:9363"]
+          metric_relabel_configs:
+            # ClickHouse exposes hundreds of series. Keep the few that say whether storage is healthy.
+            - source_labels: [__name__]
+              regex: "ClickHouseAsyncMetrics_(FilesystemMainPath(Available|Total|Used)Bytes|MaxPartCountForPartition|Uptime)|ClickHouseMetrics_(Query|Merge|DelayedInserts)"
+              action: keep
+
 processors:
   memory_limiter:
     check_interval: 1s
@@ -33,6 +52,20 @@ processors:
     timeout: 5s
     send_batch_size: 5000
     send_batch_max_size: 10000
+
+  # Default data protection. Attribute values are masked when the key looks sensitive,
+  # and card numbers and bearer tokens are masked wherever they appear in an attribute
+  # value or a log body.
+  redaction:
+    allow_all_keys: true
+    blocked_key_patterns:
+      - "(?i).*(authorization|cookie|passw(or)?d|secret|api[_.-]?key|cvv|cvc|card[_.-]?(number|no)).*"
+      # "token" and "ssn" only as a whole word, so counters such as gen_ai.usage.input_tokens are kept.
+      - "(?i)^(.*[._-])?(token|ssn)([._-].*)?$"
+    blocked_values:
+      - "(?i)bearer\\s+[A-Za-z0-9._~+/=-]{8,}"
+      - "\\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13})\\b"
+    summary: silent
 
 exporters:
   clickhouse:
@@ -56,16 +89,25 @@ exporters:
 
 service:
   extensions: [health_check, bearertokenauth, file_storage]
+  telemetry:
+    metrics:
+      level: normal
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 127.0.0.1
+                port: 8888
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [memory_limiter, redaction, batch]
       exporters: [clickhouse]
     logs:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [memory_limiter, redaction, batch]
       exporters: [clickhouse]
     metrics:
-      receivers: [otlp]
-      processors: [memory_limiter, batch]
+      receivers: [otlp, prometheus/self]
+      processors: [memory_limiter, redaction, batch]
       exporters: [clickhouse]

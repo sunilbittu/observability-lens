@@ -57,7 +57,7 @@ wait_count "trace stored"               "SELECT count() FROM otel_traces WHERE S
 wait_count "log stored with trace id"   "SELECT count() FROM otel_logs WHERE ServiceName='$run' AND Body='smoke log' AND TraceId='$trace_id'"
 wait_count "event stored as tagged log" "SELECT count() FROM otel_logs WHERE ServiceName='$run' AND LogAttributes['tracemelt.event']='true' AND LogAttributes['event.name']='order.placed'"
 wait_count "gauge stored"               "SELECT count() FROM otel_metrics_gauge WHERE ServiceName='$run' AND MetricName='smoke.gauge'"
-check "rejected requests stored nothing" 2 "$(ch "SELECT count() FROM otel_logs WHERE ServiceName='$run'")"
+check "rejected requests stored nothing" 2 "$(ch "SELECT count() FROM otel_logs WHERE ServiceName='$run' AND Body IN ('smoke log', 'order.placed')")"
 
 # --- query API -------------------------------------------------------------
 api="http://127.0.0.1:${TRACEMELT_API_PORT:-8000}/api"
@@ -104,6 +104,34 @@ check "reader cannot raise its limits"    "Code: 164" "$(reader "SET max_executi
 check "reader cannot read other databases" "Code: 497" "$(reader "SELECT count() FROM system.users")"
 check "slow query killed by time limit"   "Code: 159" "$(reader "SELECT count() FROM numbers(100000000000) WHERE sipHash64(number) = 1")"
 check "large result killed by row limit"  "Code: 396" "$(reader "SELECT number FROM numbers(1000000)")"
+
+# --- default redaction -----------------------------------------------------
+secrets='{"resourceLogs":[{"resource":'"$res"',"scopeLogs":[{"logRecords":[{"timeUnixNano":"'"$now"'","severityText":"INFO","body":{"stringValue":"redaction probe paid with 4111111111111111 header Authorization: Bearer abcdef1234567890"},"attributes":[
+  {"key":"user.password","value":{"stringValue":"hunter2"}},{"key":"http.request.header.cookie","value":{"stringValue":"sid=abc"}},
+  {"key":"gen_ai.usage.input_tokens","value":{"stringValue":"1234"}},{"key":"order.id","value":{"stringValue":"ord-42"}}]}]}]}]}'
+check "log with secrets accepted" 200 "$(post /v1/logs "$TRACEMELT_INGEST_TOKEN" "$secrets")"
+probe="ServiceName='$run' AND Body LIKE 'redaction probe%'"
+wait_count "redaction probe stored"            "SELECT count() FROM otel_logs WHERE $probe"
+check "card number masked in the log body"     0 "$(ch "SELECT countIf(Body LIKE '%4111111111111111%') FROM otel_logs WHERE $probe")"
+check "bearer token masked in the log body"    0 "$(ch "SELECT countIf(Body LIKE '%abcdef1234567890%') FROM otel_logs WHERE $probe")"
+check "password attribute masked"              "****" "$(ch "SELECT LogAttributes['user.password'] FROM otel_logs WHERE $probe")"
+check "cookie attribute masked"                "****" "$(ch "SELECT LogAttributes['http.request.header.cookie'] FROM otel_logs WHERE $probe")"
+check "token counter attribute kept"           1234 "$(ch "SELECT LogAttributes['gen_ai.usage.input_tokens'] FROM otel_logs WHERE $probe")"
+check "ordinary attribute kept"                ord-42 "$(ch "SELECT LogAttributes['order.id'] FROM otel_logs WHERE $probe")"
+
+# --- self-observability ----------------------------------------------------
+wait_gauge() { # name metric service
+  local n=0 got=0
+  while [ $n -lt 90 ]; do
+    got=$(ch "SELECT toUInt8(count() > 0) FROM otel_metrics_gauge WHERE MetricName='$2' AND ServiceName='$3' AND TimeUnix >= now() - 180" 2>/dev/null || echo 0)
+    [ "$got" = "1" ] && break
+    sleep 2; n=$((n+2))
+  done
+  check "$1" 1 "$got"
+}
+wait_gauge "collector reports its export queue size" otelcol_exporter_queue_size otelcol-contrib
+wait_gauge "clickhouse free disk space is collected" ClickHouseAsyncMetrics_FilesystemMainPathAvailableBytes tracemelt-clickhouse
+check "collector counts what it accepted" 1 "$(ch "SELECT toUInt8(count() > 0) FROM otel_metrics_sum WHERE MetricName='otelcol_receiver_accepted_log_records' AND TimeUnix >= now() - 180")"
 
 # --- alerting --------------------------------------------------------------
 # Two shipped rules watch for this marker: one sends to the demo receiver, one to the

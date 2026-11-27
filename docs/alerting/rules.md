@@ -27,6 +27,8 @@ These are the ways this prototype can mislead you.
 - **One webhook attempt.** A failed delivery is recorded and never retried.
 - **A metric with no data does not fire.** A service that stops reporting is
   not detected.
+- **It cannot report a ClickHouse outage.** The engine reads from ClickHouse,
+  so while ClickHouse is down no rule is evaluated.
 - **Run one instance.** Two `alerts` containers would both fire.
 - **Rules are a file.** Changing them needs a restart, and there is no audit
   trail of edits. There are no silences.
