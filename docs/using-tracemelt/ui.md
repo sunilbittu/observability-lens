@@ -28,9 +28,9 @@ shows "That token was not accepted."
 |---|---|
 | Overview | Services with span counts and failure rate, and the latest failed traces. Select a service to see its traces. |
 | Traces | Recent traces, filtered by service or failed only. Select a trace to open it. |
-| Trace | A waterfall of every span, nested by parent. Failed spans are hatched and marked. Select a span for its attributes. Log records that carry the trace id are listed below. |
+| Trace | A waterfall of every span, nested by parent. A failed span has a mark beside its name and a red strip under its bar. Select a span for its attributes. Log records that carry the trace id are listed below. |
 | Logs | Log records, with a text search on the message and a service filter. **Open trace** jumps to the trace a record belongs to. |
-| Metrics | Gauge metrics, charted as the average per service. Hover for values, or switch to a table. |
+| Metrics | Gauge metrics, charted as the average per service. Hover, or focus the chart and use the arrow keys, to read values; or switch to a table. Lines break where data is missing. |
 | Events | Log records tagged as events, with their attributes. |
 
 The time range (15m, 1h, 6h, 24h) applies to every view. List views refresh
@@ -39,8 +39,8 @@ every 10 seconds while the tab is visible.
 ## Find a failed request
 
 1. On **Overview**, select one of the latest failed traces.
-2. In the waterfall, the hatched bars are the spans that failed. The deepest
-   failed span is usually the cause.
+2. In the waterfall, the bars with a red strip are the spans that failed. The
+   deepest failed span is usually the cause.
 3. Select that span to read its status message and attributes.
 4. Read the log records under the waterfall for what each service logged.
 

@@ -100,6 +100,13 @@ function svc(service) {
   dot.style.setProperty("--c", colour(service));
   return h("span", { class: "svc" }, dot, service || "unknown");
 }
+// Key for a line series: a short stroke of the series colour, as the legend mirrors the mark.
+function lineKey(service) {
+  const stroke = h("i");
+  stroke.style.setProperty("--c", colour(service));
+  return h("span", { class: "svc key" }, stroke, service || "unknown");
+}
+
 async function primeServices() {
   const rows = await api("/services?since_minutes=1440");
   // Busiest services first, so the ones people look at get the six distinct colours.
@@ -196,7 +203,7 @@ function serviceSelect(value, onchange) {
 // ---------- overview ----------
 
 function overview() {
-  const lede = h("h1", { class: "lede" });
+  const lede = h("h1", { class: "lede figure" });
   const sub = h("p", { class: "sub" });
   const body = h("div");
   fill(view, lede, sub, body);
@@ -225,7 +232,7 @@ function overview() {
       fill(body, 
         h("div", { class: "scroll" }, h("table", { class: "table" },
           h("thead", {}, h("tr", {}, h("th", {}, "Service"), h("th", { class: "num" }, "Spans"),
-            h("th", { class: "num" }, "Failed"), h("th", {}, "Failure rate"))),
+            h("th", { class: "num" }, "Failed"), h("th", {}, "Failure rate ", h("span", { class: "note" }, `bar full at ${(worst * 100).toFixed(worst < 0.1 ? 1 : 0)}%`)))),
           h("tbody", {}, services.map((r) => {
             const rate = r.error_spans / r.spans;
             const fill = h("i");
@@ -515,7 +522,7 @@ function niceTicks(lo, hi, n = 4) {
   return ticks;
 }
 
-function drawChart(box, name, rows, showTable) {
+function drawChart(box, name, rows, showTable, stepSeconds) {
   const byService = new Map();
   for (const r of rows) {
     if (!byService.has(r.service)) byService.set(r.service, []);
@@ -523,16 +530,21 @@ function drawChart(box, name, rows, showTable) {
   }
   const series = [...byService.entries()].sort(([a], [b]) => a.localeCompare(b));
   const W = Math.max(box.clientWidth - 36, 320), H = 300;
-  const m = { l: 52, r: series.length <= 4 ? 96 : 14, t: 10, b: 26 };
+  const m = { l: 52, r: 14, t: 10, b: 26 };
   const ts = rows.map((r) => parseTime(r.bucket).getTime());
   const t0 = Math.min(...ts), t1 = Math.max(...ts) === t0 ? t0 + 60000 : Math.max(...ts);
   const ticks = niceTicks(Math.min(...rows.map((r) => r.avg)), Math.max(...rows.map((r) => r.avg)));
   const y0 = ticks[0], y1 = ticks[ticks.length - 1];
+  // Direct end labels only when there are few series and their ends are clear of each other.
+  // Converging ends are never nudged apart: the legend and the tooltip carry identity instead.
+  const endYs = series.map(([, pts]) => (1 - (pts[pts.length - 1].v - y0) / (y1 - y0)) * (H - m.t - m.b)).sort((a, b) => a - b);
+  const direct = series.length >= 2 && series.length <= 4 && endYs.every((v, i) => i === 0 || v - endYs[i - 1] >= 16);
+  if (direct) m.r = 104;
   const places = ticks.every((v) => Number.isInteger(v)) ? 0 : ticks.every((v) => Number.isInteger(v * 10)) ? 1 : 2;
   const x = (t) => m.l + ((t - t0) / (t1 - t0)) * (W - m.l - m.r);
   const y = (v) => m.t + (1 - (v - y0) / (y1 - y0)) * (H - m.t - m.b);
 
-  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": `${name}, average per service over time` });
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, height: H, role: "img", "aria-label": `${name}, average per service over time. Use the arrow keys to read values.` });
   for (const v of ticks) {
     svg.append(s("line", { class: "grid", x1: m.l, x2: W - m.r, y1: y(v), y2: y(v) }),
       s("text", { class: "axis", x: m.l - 10, y: y(v), "text-anchor": "end", "dominant-baseline": "central" }, v.toFixed(places)));
@@ -545,7 +557,13 @@ function drawChart(box, name, rows, showTable) {
   const ends = [];
   for (const [service, pts] of series) {
     const c = colour(service);
-    const line = s("path", { class: "line", d: pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`).join("") });
+    // A gap of more than two buckets is missing data: the line breaks there and is never drawn across it.
+    const gap = stepSeconds * 2500;
+    const d = pts.map((p, i) => {
+      const at = `${x(p.t).toFixed(1)} ${y(p.v).toFixed(1)}`;
+      return i && p.t - pts[i - 1].t <= gap ? `L${at}` : `M${at}l0 0`;
+    }).join("");
+    const line = s("path", { class: "line", d });
     line.style.stroke = c;
     const last = pts[pts.length - 1];
     const end = s("circle", { class: "end", cx: x(last.t), cy: y(last.v), r: 4.5 });
@@ -553,11 +571,7 @@ function drawChart(box, name, rows, showTable) {
     svg.append(line, end);
     ends.push({ service, y: y(last.v), x: x(last.t) });
   }
-  if (series.length <= 4) {            // direct labels, nudged apart so they never collide
-    ends.sort((a, b) => a.y - b.y);
-    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 15) ends[i].y = ends[i - 1].y + 15;
-    for (const e of ends) svg.append(s("text", { class: "endlabel", x: e.x + 12, y: e.y, "dominant-baseline": "central" }, e.service));
-  }
+  if (direct) for (const e of ends) svg.append(s("text", { class: "endlabel", x: e.x + 12, y: e.y, "dominant-baseline": "central" }, e.service));
 
   // hover layer: crosshair and tooltip, snapped to the nearest bucket
   const buckets = [...new Set(ts)].sort((a, b) => a - b);
@@ -566,24 +580,38 @@ function drawChart(box, name, rows, showTable) {
   svg.append(cross, hit);
   const tip = h("div", { class: "tip", hidden: true });
   const hide = () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); };
-  hit.addEventListener("pointerleave", hide);
-  hit.addEventListener("pointermove", (e) => {
+  let at = buckets.length - 1;
+  const show = (i) => {
+    at = Math.min(Math.max(i, 0), buckets.length - 1);
+    const near = buckets[at];
     const r = svg.getBoundingClientRect();
-    const px = ((e.clientX - r.left) / r.width) * W;
-    const t = t0 + ((px - m.l) / (W - m.l - m.r)) * (t1 - t0);
-    const near = buckets.reduce((a, b) => (Math.abs(b - t) < Math.abs(a - t) ? b : a));
     cross.setAttribute("x1", x(near)); cross.setAttribute("x2", x(near)); cross.setAttribute("visibility", "visible");
     const d = new Date(near);
     fill(tip, h("time", {}, `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`),
       series.map(([service, pts]) => {
         const p = pts.find((q) => q.t === near);
-        return p ? h("div", {}, svc(service), h("b", {}, num(p.v))) : null;
+        return p ? h("div", {}, h("b", {}, num(p.v)), lineKey(service)) : null;
       }));
     tip.hidden = false;
     const box2 = box.getBoundingClientRect();
     const tx = r.left - box2.left + (x(near) / W) * r.width;
     const flip = tx + tip.offsetWidth + 24 > box2.width;
     tip.style.transform = `translate(${flip ? tx - tip.offsetWidth - 14 : tx + 14}px, ${r.top - box2.top + 14}px)`;
+  };
+  hit.addEventListener("pointerleave", () => { if (document.activeElement !== svg) hide(); });
+  hit.addEventListener("pointermove", (e) => {
+    const r = svg.getBoundingClientRect();
+    const t = t0 + ((((e.clientX - r.left) / r.width) * W - m.l) / (W - m.l - m.r)) * (t1 - t0);
+    show(buckets.reduce((best, b, i) => (Math.abs(b - t) < Math.abs(buckets[best] - t) ? i : best), 0));
+  });
+  // Keyboard reads the same values as hover: focus the chart, then use the arrow keys.
+  svg.setAttribute("tabindex", "0");
+  svg.addEventListener("focus", () => show(at));
+  svg.addEventListener("blur", hide);
+  svg.addEventListener("keydown", (e) => {
+    const move = { ArrowLeft: -1, ArrowRight: 1, Home: -buckets.length, End: buckets.length }[e.key];
+    if (move) { e.preventDefault(); show(at + move); }
+    if (e.key === "Escape") svg.blur();
   });
 
   const table = h("div", { class: "scroll" }, h("table", { class: "table" },
@@ -612,8 +640,8 @@ function metrics(params) {
     const services = [...new Set(lastRows.map((r) => r.service))].sort();
     fill(chart, h("h3", {}, selected),
       h("p", { class: "unit" }, `Average per service, ${step()} second buckets.`),
-      ...(lastRows.length ? drawChart(chart, selected, lastRows, asTable) : [empty("No data points in this window.")]),
-      h("div", { class: "chart-foot" }, h("div", { class: "legend" }, services.length > 1 ? services.map(svc) : null), lastRows.length ? toggle : null));
+      ...(lastRows.length ? drawChart(chart, selected, lastRows, asTable, step()) : [empty("No data points in this window.")]),
+      h("div", { class: "chart-foot" }, h("div", { class: "legend" }, services.length > 1 && !asTable ? services.map(lineKey) : null), lastRows.length ? toggle : null));
   };
   let resize = null;
   const onResize = () => { clearTimeout(resize); resize = setTimeout(() => { if (chart.isConnected) paint(); else removeEventListener("resize", onResize); }, 150); };

@@ -153,6 +153,7 @@ main { padding: 26px var(--gutter) 72px; outline: none; }
   letter-spacing: 0.01em;
 }
 .lede.wide { max-width: none; }
+.lede.figure { max-width: none; font-family: var(--ui); font-weight: 700; letter-spacing: -0.005em; }
 .lede .bad { color: var(--err); }
 
 .sub { margin: 0 0 26px; color: var(--ink-3); min-height: 1.5em; }
@@ -209,6 +210,8 @@ h2 {
 
 .svc { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
 .svc i { width: 9px; height: 9px; border-radius: 2px; flex: none; background: var(--c, var(--s-other)); }
+.svc.key i { width: 14px; height: 2px; border-radius: 1px; }
+.table th .note { font-weight: 500; color: var(--ink-3); opacity: 0.8; }
 
 .sev { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 13px; }
 .sev svg { width: 12px; height: 12px; flex: none; }
@@ -222,7 +225,7 @@ h2 {
 /* failure-rate meter in the services table */
 .meter { display: grid; grid-template-columns: 62px 1fr; align-items: center; gap: 12px; min-width: 200px; }
 .meter span { text-align: right; font-family: var(--data); font-size: 13.5px; }
-.meter div { height: 6px; border-radius: 3px; background: var(--bg); overflow: hidden; }
+.meter div { height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--err) 16%, var(--panel)); overflow: hidden; }
 .meter div i { display: block; height: 100%; border-radius: 3px; background: var(--err); }
 
 /* duration cell with a proportional bar */
@@ -305,11 +308,25 @@ h2 {
   border-radius: 0 4px 4px 0;   /* square at its start, rounded at the data end */
   background: var(--c, var(--s-other));
 }
-/* A failed span keeps its service colour and gains a hatch, so failure never rests on colour alone. */
-.wf-bar.bad {
-  background: repeating-linear-gradient(135deg,
-    var(--c, var(--s-other)) 0 5px,
-    color-mix(in srgb, var(--c, var(--s-other)) 42%, var(--panel)) 5px 9px);
+/* A failed span keeps its service colour. Failure is a status: the mark beside the span name says
+   it, and a status-coloured strip under the bar repeats it in the lane, set off by a surface gap. */
+.wf-bar.bad::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 2px);
+  height: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--err);
+}
+/* Texture is the backup channel, used only where colour cannot be relied on. */
+@media print, (forced-colors: active), (prefers-contrast: more) {
+  .wf-bar.bad {
+    background: repeating-linear-gradient(135deg,
+      var(--c, var(--s-other)) 0 5px,
+      color-mix(in srgb, var(--c, var(--s-other)) 42%, var(--panel)) 5px 9px);
+  }
 }
 
 .wf-detail { margin: 2px 0 8px; padding: 14px 18px 16px; border-radius: 9px; background: var(--bg); }
@@ -342,7 +359,8 @@ h2 {
 .chart { position: relative; border-radius: 14px; background: var(--panel); padding: 18px 18px 14px; }
 .chart h3 { margin: 0 0 2px; font: 500 15px/1.4 var(--data); }
 .chart .unit { margin: 0 0 10px; font-size: 13px; color: var(--ink-3); }
-.chart svg { display: block; width: 100%; overflow: visible; }
+.chart svg { display: block; width: 100%; overflow: visible; border-radius: 6px; }
+.chart svg:focus-visible { outline-offset: 6px; }
 .chart .grid { stroke: rgb(239 230 218 / 0.08); stroke-width: 1; }
 .chart .axis { fill: var(--ink-3); font: 500 12px var(--data); }
 .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
@@ -363,8 +381,9 @@ h2 {
   font-size: 13px;
 }
 .tip time { display: block; margin-bottom: 6px; font-family: var(--data); color: var(--ink-3); }
-.tip div { display: flex; justify-content: space-between; gap: 18px; }
-.tip div b { font: 500 13px var(--data); }
+.tip div { display: grid; grid-template-columns: minmax(44px, auto) 1fr; align-items: center; gap: 12px; }
+.tip div b { font: 600 13.5px var(--data); color: var(--ink); text-align: right; }
+.tip div .svc { color: var(--ink-2); }
 .chart-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
 .chart-foot .legend { margin: 0; }
 
