@@ -1,0 +1,212 @@
+site_name: otelens
+site_description: OpenTelemetry-native observability — metrics, events, logs, traces
+site_url: https://YOUR_ORG.github.io/otelens/
+repo_url: https://github.com/YOUR_ORG/otelens
+edit_uri: edit/main/docs/
+
+strict: true
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+    - search.suggest
+  palette:
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+plugins:
+  - search
+
+extra:
+  version:
+    provider: mike
+    default: latest
+    alias: true
+
+nav:
+  - Home: index.md
+
+  - Getting started:
+      - Quickstart: getting-started/quickstart.md
+      - Instrument your first app: getting-started/first-app.md
+      - Create your first alert: getting-started/first-alert.md
+      - UI tour: getting-started/ui-tour.md
+      - Installation:
+          - Docker Compose: getting-started/installation/docker-compose.md
+          - Kubernetes: getting-started/installation/kubernetes.md
+          - Air-gapped: getting-started/installation/air-gapped.md
+          - Production checklist: getting-started/installation/production-checklist.md
+
+  - Concepts:
+      - MELT model: concepts/melt.md
+      - Architecture: concepts/architecture.md
+      - Data model: concepts/data-model.md
+      - Events as logs: concepts/events-as-logs.md
+      - OpenTelemetry primer: concepts/opentelemetry-primer.md
+      - Cardinality: concepts/cardinality.md
+      - Sampling: concepts/sampling.md
+      - Guarantees: concepts/guarantees.md
+
+  - Instrumentation:
+      - Overview: instrumentation/overview.md
+      - Node.js: instrumentation/nodejs.md
+      - Python: instrumentation/python.md
+      - Java: instrumentation/java.md
+      - .NET: instrumentation/dotnet.md
+      - Go: instrumentation/go.md
+      - Browser RUM: instrumentation/browser-rum.md
+      - Mobile: instrumentation/mobile.md
+      - SDK reference:
+          - Node.js API: instrumentation/sdk-reference/nodejs-api.md
+          - Python API: instrumentation/sdk-reference/python-api.md
+      - Custom events: instrumentation/custom-events.md
+      - Custom metrics: instrumentation/custom-metrics.md
+      - Logs and correlation: instrumentation/logs-and-correlation.md
+      - Context propagation: instrumentation/context-propagation.md
+      - PII and redaction: instrumentation/pii-and-redaction.md
+      - Performance and fail-open: instrumentation/performance-and-fail-open.md
+      - SDK troubleshooting: instrumentation/troubleshooting-sdk.md
+
+  - Collection:
+      - Overview: collection/overview.md
+      - Configuration reference: collection/configuration-reference.md
+      - Pipelines: collection/pipelines.md
+      - Receivers: collection/receivers.md
+      - Processors: collection/processors.md
+      - Exporters: collection/exporters.md
+      - Connectors: collection/connectors.md
+      - Deployment patterns: collection/deployment-patterns.md
+      - Scaling: collection/scaling.md
+
+  - Infrastructure:
+      - Hosts: infrastructure/hosts.md
+      - Docker: infrastructure/docker.md
+      - Kubernetes: infrastructure/kubernetes.md
+      - GPUs:
+          - NVIDIA: infrastructure/gpus/nvidia.md
+          - AMD: infrastructure/gpus/amd.md
+          - Intel: infrastructure/gpus/intel.md
+      - Databases: infrastructure/databases.md
+      - Queues: infrastructure/queues.md
+      - Cloud: infrastructure/cloud.md
+      - Metric names: infrastructure/metric-names.md
+
+  - Using otelens:
+      - Traces: using-otelens/traces.md
+      - Logs: using-otelens/logs.md
+      - Metrics: using-otelens/metrics.md
+      - Events: using-otelens/events.md
+      - Dashboards: using-otelens/dashboards.md
+      - Search and query: using-otelens/search-and-query.md
+      - Incident workflow: using-otelens/incident-workflow.md
+
+  - Alerting:
+      - Overview: alerting/overview.md
+      - Rule reference: alerting/rule-reference.md
+      - Notifications: alerting/notifications.md
+      - Presets: alerting/presets.md
+      - Limitations: alerting/limitations.md
+      - Roadmap: alerting/roadmap.md
+
+  - API:
+      - REST reference: api/rest-reference.md
+      - Authentication: api/authentication.md
+      - Limits and quotas: api/limits-and-quotas.md
+      - Examples: api/examples.md
+
+  - Storage:
+      - ClickHouse schema: storage/clickhouse-schema.md
+      - Retention and TTL: storage/retention-and-ttl.md
+      - Sizing and capacity: storage/sizing-and-capacity.md
+      - Downsampling: storage/downsampling.md
+      - Backup and restore: storage/backup-restore.md
+
+  - Operations:
+      - Hardening: operations/hardening.md
+      - Security model: operations/security-model.md
+      - Auth and RBAC: operations/auth-and-rbac.md
+      - Multi-tenancy: operations/multi-tenancy.md
+      - Upgrades and migrations: operations/upgrades-and-migrations.md
+      - Monitoring otelens: operations/monitoring-otelens.md
+      - HA and scaling: operations/ha-and-scaling.md
+      - Performance tuning: operations/performance-tuning.md
+      - Runbooks:
+          - ClickHouse down: operations/runbooks/clickhouse-down.md
+          - Disk full: operations/runbooks/disk-full.md
+          - Ingest lag: operations/runbooks/ingest-lag.md
+          - Alert storm: operations/runbooks/alert-storm.md
+          - Slow queries: operations/runbooks/slow-queries.md
+
+  - Troubleshooting:
+      - No data: troubleshooting/no-data.md
+      - Collector errors: troubleshooting/collector-errors.md
+      - ClickHouse errors: troubleshooting/clickhouse-errors.md
+      - UI errors: troubleshooting/ui-errors.md
+      - FAQ: troubleshooting/faq.md
+
+  - Migrating:
+      - From Grafana LGTM: migrating/from-grafana-lgtm.md
+      - From SigNoz: migrating/from-signoz.md
+      - From Datadog: migrating/from-datadog.md
+      - From ELK: migrating/from-elk.md
+
+  - Reference:
+      - Environment variables: reference/env-vars.md
+      - CLI: reference/cli.md
+      - Ports: reference/ports.md
+      - Glossary: reference/glossary.md
+      - Error codes: reference/error-codes.md
+      - Version support: reference/version-support.md
+
+  - Project:
+      - Roadmap: project/roadmap.md
+      - Changelog: project/changelog.md
+      - Comparison: project/comparison.md
+      - Contributing: project/contributing.md
+      - Development setup: project/development-setup.md
+      - Governance: project/governance.md
+      - Security policy: project/security-policy.md
+      - License: project/license.md
+      - Architecture decisions:
+          - Overview: project/architecture-decisions/index.md
+          - ADR-0001 ClickHouse: project/architecture-decisions/adr-0001-clickhouse.md
+          - ADR-0002 Events as logs: project/architecture-decisions/adr-0002-events-as-logs.md
+          - ADR-0003 OTLP-only: project/architecture-decisions/adr-0003-otlp-only.md
+          - ADR-0004 Schema ownership: project/architecture-decisions/adr-0004-schema-ownership.md
+          - ADR-0005 Thin SDKs: project/architecture-decisions/adr-0005-thin-sdks.md
+          - ADR-0006 OIDC auth: project/architecture-decisions/adr-0006-auth-oidc.md
