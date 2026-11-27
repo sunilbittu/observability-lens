@@ -518,6 +518,116 @@
       
   
   
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/self-observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Self-observability and data handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../operations/backup-and-restore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Back up and restore
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -531,10 +641,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -552,8 +662,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -765,10 +875,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -786,8 +896,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1143,6 +1253,11 @@ ignored by git.</p>
 <td>Allowed hosts that may resolve to private addresses. Not written by <code>init-env.sh</code>.</td>
 </tr>
 <tr>
+<td><code>TRACEMELT_BACKUP_PASSWORD</code></td>
+<td>generated</td>
+<td>Password for backup archives. Letters and digits only. See <a href="../../operations/backup-and-restore/">back up and restore</a>.</td>
+</tr>
+<tr>
 <td><code>TRACEMELT_API_TOKEN</code></td>
 <td>generated</td>
 <td>Bearer token for the query API. Different from the ingest token.</td>
@@ -1247,13 +1362,17 @@ ClickHouse 26 seconds after it came back, with no duplicates.</p>
 <li><strong>Outages longer than 10 minutes drop data.</strong> Retries are bounded on
   purpose. Nothing alerts on queue size yet.</li>
 <li><strong>Alerting is basic.</strong> See <a href="../../alerting/rules/#limitations">alert limitations</a>.</li>
-<li><strong>One shared ingest token.</strong> No per-service credentials, no rate limits.</li>
-<li><strong>No TLS</strong>, no self-metrics pipeline, no backups, no PII redaction.</li>
+<li><strong>One shared ingest token.</strong> No per-service credentials.</li>
+<li><strong>Redaction is a safety net</strong>, see <a href="../../operations/self-observability/#what-is-masked-by-default">what is masked</a>.</li>
+<li><strong>Backups are manual</strong>, see <a href="../../operations/backup-and-restore/#limitations">back up and restore</a>.</li>
+<li><strong>No TLS</strong> and no rate limits.</li>
 </ul>
 <h2 id="related">Related</h2>
 <ul>
 <li><a href="../../getting-started/quickstart/">Quickstart</a></li>
 <li><a href="../../api/query-api/">Query API reference</a></li>
+<li><a href="../../operations/self-observability/">Self-observability and data handling</a></li>
+<li><a href="../../operations/backup-and-restore/">Back up and restore</a></li>
 <li><a href="../../alerting/rules/">Alert rules and limitations</a></li>
 <li><a href="../../project/roadmap/">Roadmap</a></li>
 </ul>
