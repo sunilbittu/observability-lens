@@ -40,6 +40,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   ClickHouse metrics are collected, with shipped alert rules for the export
   queue, free disk space and part count.
 - `scripts/backup.sh` and `scripts/restore-test.sh`, run in CI.
+- Node.js and Python SDKs in `sdk/`, unpublished: thin wrappers over the
+  upstream OpenTelemetry SDKs with `count`, `gauge`, `timing` and `event`
+  helpers, a `node -r tracemelt/register` hook and a `tracemelt` command for
+  Python. Fail-open, bounded queues, console and logging capture off by
+  default.
 - ClickHouse user `tracemelt_reader`: select-only, with time, memory and row
   limits it cannot raise.
 - `scripts/init-env.sh` to generate secrets and `scripts/smoke.sh` to verify
