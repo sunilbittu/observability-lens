@@ -16,4 +16,12 @@
          <loc>https://sunilbittu.github.io/observability-lens/dev/project/roadmap/</loc>
          <lastmod>2026-11-27</lastmod>
     </url>
+    <url>
+         <loc>https://sunilbittu.github.io/observability-lens/dev/project/adr/0001-schema-init-job/</loc>
+         <lastmod>2026-11-27</lastmod>
+    </url>
+    <url>
+         <loc>https://sunilbittu.github.io/observability-lens/dev/reference/configuration/</loc>
+         <lastmod>2026-11-27</lastmod>
+    </url>
 </urlset>

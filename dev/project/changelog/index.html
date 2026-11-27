@@ -14,6 +14,8 @@
         <link rel="prev" href="../roadmap/">
       
       
+        <link rel="next" href="../adr/0001-schema-init-job/">
+      
       
         
       
@@ -352,6 +354,88 @@
       
   
   
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -365,10 +449,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -386,8 +470,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -550,6 +634,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0001-schema-init-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0001: schema-init job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -663,6 +775,16 @@ to this repository. Applies to: <code>dev</code>.</p>
 <h2 id="unreleased">Unreleased</h2>
 <h3 id="added">Added</h3>
 <ul>
+<li>Single-node Docker Compose stack: OpenTelemetry Collector contrib 0.166.0
+  writing to ClickHouse 26.8.48.11.</li>
+<li>OTLP ingest requires a bearer token. Requests without it get HTTP 401.</li>
+<li>On-disk collector export queue with bounded retries.</li>
+<li>One-shot <code>schema-init</code> job creates the exporter's tables, so the collector
+  can start and queue data while ClickHouse is down.</li>
+<li><code>scripts/outage-test.sh</code> to test durability across a ClickHouse outage.</li>
+<li><code>scripts/init-env.sh</code> to generate secrets and <code>scripts/smoke.sh</code> to verify
+  ingest end to end.</li>
+<li>Configuration reference page.</li>
 <li>Apache-2.0 <code>LICENSE</code> and a <code>README</code>.</li>
 <li>Roadmap and changelog pages.</li>
 <li>Strict docs build as a gate before every docs deploy.</li>
@@ -671,8 +793,8 @@ to this repository. Applies to: <code>dev</code>.</p>
 <ul>
 <li>Project name in the docs is now tracemelt. The repository and docs URL
   remain <code>observability-lens</code>.</li>
-<li>The landing page and quickstart are labelled "planned" and no longer
-  describe components that are not in the repository.</li>
+<li>The landing page and quickstart describe only what is in the repository.
+  The quickstart is now a verified ingest tutorial.</li>
 <li>Quickstart moved to <code>getting-started/quickstart.md</code>. The old
   <code>/quickstart/</code> URL no longer resolves.</li>
 </ul>

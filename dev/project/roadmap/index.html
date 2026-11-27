@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://sunilbittu.github.io/observability-lens/dev/project/roadmap/">
       
       
-        <link rel="prev" href="../../getting-started/quickstart/">
+        <link rel="prev" href="../../reference/configuration/">
       
       
         <link rel="next" href="../changelog/">
@@ -354,6 +354,88 @@
       
   
   
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -367,10 +449,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -388,8 +470,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -568,6 +650,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/0001-schema-init-job/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR 0001: schema-init job
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -690,8 +800,8 @@
 <h1 id="roadmap">Roadmap</h1>
 <div class="admonition warning">
 <p class="admonition-title">Status: planned</p>
-<p>Everything below Phase -1 is planned work with no code in the repository.
-There are no dates. Applies to: <code>dev</code> (no release exists).</p>
+<p>Only items marked done have code in the repository. There are no dates.
+Applies to: <code>dev</code> (no release exists).</p>
 </div>
 <p>Phases are worked in order. A phase is complete only when its acceptance
 checks have been run and the results recorded.</p>
@@ -730,19 +840,25 @@ checks have been run and the results recorded.</p>
 <td>not done: no release exists, the site root points at <code>dev</code></td>
 </tr>
 <tr>
-<td>Remaining Wave 1 pages (MELT model, architecture, data model, ports, environment variables, alerting limitations, no-data troubleshooting)</td>
+<td>Ports and environment variables reference</td>
+<td>done</td>
+</tr>
+<tr>
+<td>Remaining Wave 1 pages (MELT model, architecture, data model, alerting limitations, no-data troubleshooting)</td>
 <td>not done: they describe components that do not exist yet</td>
 </tr>
 </tbody>
 </table>
 <h2 id="phase-0-verify-the-quickstart">Phase 0: verify the quickstart</h2>
-<p>State: blocked. The collector config, ClickHouse setup, query API, UI, alert
-engine and demo workload have to be added to the repository before anything
-can be verified.</p>
+<p>State: in progress. Ingest is verified: the collector accepts authenticated
+OTLP and writes traces, logs, events and metrics to ClickHouse. The query API,
+UI, alert engine and demo workload do not exist yet.</p>
 <p>Acceptance: a new user can follow the quickstart without guessing, and every
 command has a recorded expected output.</p>
 <h2 id="phase-1-harden-single-node">Phase 1: harden single-node</h2>
-<p>State: planned.</p>
+<p>State: started. Done so far: secrets from the environment, token
+authenticated OTLP ingest, a persistent collector queue (tested with a 300
+second outage and a collector restart), ClickHouse with no published ports.</p>
 <p>Scope: secrets from the environment, authenticated OTLP ingest, an
 authenticated UI and API, a persistent collector queue, query guardrails,
 webhook allowlisting with SSRF protection, self-metrics, disk and retention
