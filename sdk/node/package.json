@@ -20,7 +20,7 @@
     "./register": "./register.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.15"
   },
   "scripts": {
     "test": "node --test \"test/*.test.js\""

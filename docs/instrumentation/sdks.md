@@ -13,6 +13,8 @@ wrapper registers the standard global providers.
 ## Install
 
 The packages are not published. Install from a checkout of this repository.
+Node.js 22.15 or newer is required, because the upstream OpenTelemetry
+packages require it. Python 3.10 or newer is required.
 
 === "Node.js"
 
