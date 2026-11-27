@@ -37,7 +37,12 @@ jobs:
 
       - name: Deploy dev docs from main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: mike deploy --push dev
+        run: |
+          mike deploy --push dev
+          # Until a tagged release publishes "latest", point the site root at dev
+          if ! mike list | grep -q latest; then
+            mike set-default --push dev
+          fi
 
       - name: Deploy release docs from tag
         if: startsWith(github.ref, 'refs/tags/v')
